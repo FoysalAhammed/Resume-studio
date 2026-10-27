@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CareerLens AI - Career & Upskilling Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: '#B1D4D0',
+                        brandDark: '#91b8b4',
+                        brandHover: '#c4e2de',
+                        brandBg: '#52352D',
+                        customText: '#B1D4D0'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+        
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #52352D;
+            color: #B1D4D0;
+            overflow-x: hidden;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.25s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .drop-zone {
+            transition: all 0.25s ease;
+            border: 1.5px dashed #B1D4D0;
+        }
+        
+        .drop-zone:hover, .drop-zone.dragover {
+            border-color: #B1D4D0;
+            background-color: rgba(177, 212, 208, 0.08);
+        }
+
+        .browser-mockup-light {
+            border: 1px solid #6b473d;
+            border-radius: 16px;
+            overflow: hidden;
+            background: #3d2621;
+            box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            min-height: 620px;
+        }
+
+        .browser-header-light {
+            background: #2f1d19;
+            padding: 0.65rem 1rem;
+            border-bottom: 1px solid #6b473d;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .browser-address-bar-light {
+            flex-grow: 1;
+            background: #3d2621;
+            border: 1px solid #6b473d;
+            border-radius: 20px;
+            padding: 0.25rem 1rem;
+            display: flex;
+            align-items: center;
+            font-size: 0.8rem;
+            color: #B1D4D0;
+        }
+
+        .ai-sidebar {
+            width: 320px;
+            background: #34201c;
+            border-left: 1px solid #6b473d;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease;
+        }
+        
+        @media (max-width: 768px) {
+            .ai-sidebar {
+                position: absolute;
+                right: 0;
+                top: 0;
+                bottom: 0;
+                transform: translateX(100%);
+                z-index: 20;
+            }
+            .ai-sidebar.active {
+                transform: translateX(0);
+            }
+        }
+        
+        .nav-tab {
+            cursor: pointer;
+            padding: 0.75rem 1rem;
+            border-bottom: 2px solid transparent;
+            font-weight: 600;
+            color: #B1D4D0;
+            opacity: 0.7;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+        }
+        .nav-tab:hover {
+            color: #B1D4D0;
+            opacity: 1;
+        }
+        .nav-tab.active {
+            color: #B1D4D0;
+            opacity: 1;
+            border-bottom-color: #B1D4D0;
+        }
+
+        a, button, .hover-text-accent {
+            transition: color 0.2s ease, background-color 0.2s ease;
+        }
+        .hover-text-accent:hover {
+            color: #B1D4D0 !important;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .keyword-highlight-green {
+            background-color: rgba(177, 212, 208, 0.15);
+            color: #B1D4D0;
+            padding: 1px 6px;
+            border-radius: 4px;
+            border: 1px solid rgba(177, 212, 208, 0.4);
+            font-weight: 600;
+        }
+
+        .keyword-highlight-red {
+            background-color: rgba(239, 68, 68, 0.15);
+            color: #fca5a5;
+            padding: 1px 6px;
+            border-radius: 4px;
+            border-bottom: 2px dashed #ef4444;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col bg-[#52352D] text-[#B1D4D0]">
+
+    <nav class="bg-[#3d2621] border-b border-[#6b473d] sticky top-0 z-50 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center gap-2.5 cursor-pointer" onclick="switchTab('screen1')">
+                        <div class="w-9 h-9 rounded-xl bg-[#B1D4D0] flex items-center justify-center text-[#52352D] font-extrabold text-lg shadow-md">
+                            C
+                        </div>
+                        <div>
+                            <span class="font-extrabold text-lg tracking-tight text-[#B1D4D0] block leading-none">CareerLens</span>
+                        </div>
+                    </div>
+                    
+                    <div class="hidden md:ml-10 md:flex md:space-x-1">
+                        <button onclick="switchTab('screen1')" id="tab-screen1" class="nav-tab active">Upload Resume</button>
+                        <button onclick="switchTab('screen2')" id="tab-screen2" class="nav-tab">Dashboard</button>
+                        <button onclick="switchTab('screen3')" id="tab-screen3" class="nav-tab">Extension View</button>
+                    </div>
+                </div>
+
+                <div class="hidden sm:flex items-center gap-3">
+                    <span class="bg-[#52352D] text-[#B1D4D0] text-xs px-3 py-1.5 rounded-full font-semibold border border-[#6b473d]">
+                        <i class="fas fa-sparkles mr-1"></i> AI Assistant
+                    </span>
+                </div>
+                
+                <div class="flex items-center md:hidden">
+                    <button type="button" class="text-[#B1D4D0] hover:text-white p-2" id="mobile-menu-btn">
+                        <i class="fas fa-bars text-lg"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="md:hidden hidden bg-[#3d2621] border-b border-[#6b473d]" id="mobile-menu">
+            <div class="pt-2 pb-3 space-y-1">
+                <button onclick="switchTab('screen1'); closeMobileMenu()" class="block w-full text-left px-4 py-2 text-sm font-medium text-[#B1D4D0] bg-[#52352D]">Upload Resume</button>
+                <button onclick="switchTab('screen2'); closeMobileMenu()" class="block w-full text-left px-4 py-2 text-sm font-medium text-[#B1D4D0]/70 hover:text-[#B1D4D0]">Dashboard</button>
+                <button onclick="switchTab('screen3'); closeMobileMenu()" class="block w-full text-left px-4 py-2 text-sm font-medium text-[#B1D4D0]/70 hover:text-[#B1D4D0]">Extension View</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow flex items-center justify-center p-4 sm:p-6">
+        
+        <!-- ================= SCREEN 1: PROFILE SETUP CARD ================= -->
+        <div id="screen1" class="page-content fade-in w-full max-w-7xl mx-auto my-auto">
+            
+            <div class="bg-[#3d2621] border border-[#6b473d] rounded-2xl p-6 sm:p-10 shadow-2xl">
+                <h2 class="text-xl sm:text-2xl font-bold text-center text-[#B1D4D0] mb-6 tracking-wide">
+                    Set Up Your Profile
+                </h2>
+
+                <!-- Resume Drop Zone -->
+                <div id="drop-area" class="drop-zone bg-[#2f1d19] rounded-xl p-8 text-center cursor-pointer relative overflow-hidden group">
+                    <div id="upload-content" class="flex flex-col items-center justify-center space-y-3">
+                        <div class="w-12 h-12 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform text-[#B1D4D0]">
+                            <i class="fas fa-upload text-3xl"></i>
+                        </div>
+                        <div class="space-y-1">
+                            <p class="text-sm font-medium text-[#B1D4D0]">Upload Resume (PDF / DOCX)</p>
+                            <p class="text-xs text-[#B1D4D0]/70">Drag and drop or click to browse</p>
+                        </div>
+                    </div>
+
+                    <div id="processing-content" class="hidden flex flex-col items-center justify-center space-y-3 absolute inset-0 bg-[#3d2621]/95 backdrop-blur-sm z-10">
+                        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-[#B1D4D0]"></div>
+                        <p class="text-[#B1D4D0] font-semibold text-xs">Analyzing Skills & Projects...</p>
+                        <div class="w-40 h-1.5 bg-[#2f1d19] rounded-full overflow-hidden">
+                            <div id="progress-bar" class="h-full bg-[#B1D4D0] w-0 transition-all duration-200"></div>
+                        </div>
+                    </div>
+                    <input type="file" id="fileElem" accept=".pdf,.doc,.docx" class="hidden" onchange="handleFiles(this.files)">
+                </div>
+
+                <!-- Divider -->
+                <div class="relative my-6 text-center">
+                    <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-[#6b473d]"></div></div>
+                    <span class="relative bg-[#3d2621] px-3 text-[10px] font-semibold text-[#B1D4D0]/60 tracking-wider uppercase">OR ENTER MANUALLY</span>
+                </div>
+
+                <!-- Input Fields Section -->
+                <div class="space-y-5">
+                    <div>
+                        <label class="block text-xs font-medium text-[#B1D4D0] mb-1.5 flex items-center gap-1.5">
+                            <i class="fas fa-code text-[#B1D4D0] text-xs"></i> Enter Skills, Tools, or Software
+                        </label>
+                        <input type="text" id="skills-input" placeholder="e.g. React, Node.js, Python, Excel, Canva, SQL, SEO" class="w-full bg-[#2f1d19] border border-[#6b473d] rounded-xl px-4 py-3 text-xs text-[#B1D4D0] placeholder-[#B1D4D0]/50 focus:outline-none focus:border-[#B1D4D0] focus:ring-1 focus:ring-[#B1D4D0] transition-colors">
+                    </div>
+
+                    <!-- Projects Input Section -->
+                    <div>
+                        <div class="flex justify-between items-center mb-1.5">
+                            <label class="text-xs font-medium text-[#B1D4D0] flex items-center gap-1.5">
+                                <i class="fas fa-folder-open text-[#B1D4D0] text-xs"></i> Add Projects / Portfolio (Optional)
+                            </label>
+                            <button onclick="addProjectField()" class="text-[11px] text-[#B1D4D0] hover:text-white font-semibold flex items-center gap-1">
+                                <i class="fas fa-plus-circle text-[10px]"></i> Add More
+                            </button>
+                        </div>
+                        
+                        <div id="projects-container" class="space-y-3">
+                            <div class="p-4 bg-[#2f1d19] border border-[#6b473d] rounded-xl space-y-2.5">
+                                <input type="text" placeholder="Project Name (e.g. E-Commerce Web App / Marketing Audit)" class="w-full bg-[#3d2621] border border-[#6b473d] px-3 py-2 rounded-lg text-xs text-[#B1D4D0] placeholder-[#B1D4D0]/50 focus:outline-none focus:border-[#B1D4D0]">
+                                <textarea rows="2" placeholder="Brief description, tools used, or key results..." class="w-full bg-[#3d2621] border border-[#6b473d] px-3 py-2 rounded-lg text-xs text-[#B1D4D0] placeholder-[#B1D4D0]/50 focus:outline-none focus:border-[#B1D4D0] resize-none"></textarea>
+                                <input type="text" placeholder="Project / GitHub / Behance Link" class="w-full bg-[#3d2621] border border-[#6b473d] px-3 py-1.5 rounded-lg text-[11px] text-[#B1D4D0] placeholder-[#B1D4D0]/50 focus:outline-none focus:border-[#B1D4D0]">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Action Button -->
+                <button onclick="simulateUpload()" class="w-full mt-8 bg-[#B1D4D0] hover:bg-[#c4e2de] text-[#52352D] font-bold py-3.5 px-4 rounded-xl text-xs sm:text-sm shadow-lg transition-all flex items-center justify-center gap-2">
+                    <i class="fas fa-check-circle"></i> Generate Analytics & Roadmap
+                </button>
+            </div>
+
+        </div>
+
+        <!-- ================= SCREEN 2: CLEAN DASHBOARD ================= -->
+        <div id="screen2" class="page-content hidden fade-in w-full max-w-7xl mx-auto space-y-6">
+            
+            <div class="bg-[#3d2621] p-5 rounded-2xl border border-[#6b473d] shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                <div>
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="bg-[#52352D] text-[#B1D4D0] text-xs font-bold px-2.5 py-0.5 rounded-full border border-[#6b473d]">
+                            <i class="fas fa-check-circle mr-1"></i> Assessment Complete
+                        </span>
+                    </div>
+                    <h2 class="text-xl font-extrabold text-[#B1D4D0]">Career Readiness Profile</h2>
+                </div>
+                <button onclick="switchTab('screen1')" class="bg-[#2f1d19] text-[#B1D4D0] px-3.5 py-1.5 rounded-xl text-xs font-bold hover:bg-[#432924] border border-[#6b473d] flex items-center gap-1.5 transition-colors">
+                    <i class="fas fa-edit"></i> Edit Profile
+                </button>
+            </div>
+
+            <!-- Top Metric Cards Row -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-[#3d2621] p-4 rounded-2xl border border-[#6b473d] shadow-sm flex items-center gap-3">
+                    <div class="w-12 h-12 rounded-xl bg-[#2f1d19] border border-[#6b473d] flex items-center justify-center font-extrabold text-[#B1D4D0] text-base flex-shrink-0">
+                        78%
+                    </div>
+                    <div>
+                        <p class="text-[11px] font-bold uppercase text-[#B1D4D0]/60 tracking-wider">Job Readiness</p>
+                        <p class="text-sm font-bold text-[#B1D4D0]">Market Ready</p>
+                    </div>
+                </div>
+
+                <div class="bg-[#3d2621] p-4 rounded-2xl border border-[#6b473d] shadow-sm flex items-center gap-3">
+                    <div class="w-12 h-12 rounded-xl bg-[#2f1d19] border border-[#6b473d] text-[#B1D4D0] flex items-center justify-center text-lg flex-shrink-0">
+                        <i class="fas fa-bullseye"></i>
+                    </div>
+                    <div>
+                        <p class="text-[11px] font-bold uppercase text-[#B1D4D0]/60 tracking-wider">Target Role</p>
+                        <p class="text-sm font-bold text-[#B1D4D0]" id="dashboard-target-role">Junior Software Engineer</p>
+                    </div>
+                </div>
+
+                <div class="bg-[#B1D4D0] p-4 rounded-2xl shadow-lg text-[#52352D] flex items-center gap-3">
+                    <div class="w-12 h-12 rounded-xl bg-[#52352D]/15 flex items-center justify-center text-lg flex-shrink-0">
+                        <i class="fas fa-coins"></i>
+                    </div>
+                    <div>
+                        <p class="text-[11px] font-extrabold uppercase text-[#52352D]/80 tracking-wider">Expected Salary</p>
+                        <p class="text-base font-extrabold">$55k - $75k <span class="text-xs font-semibold opacity-80">/yr</span></p>
+                    </div>
+                </div>
+
+                <div class="bg-[#3d2621] p-4 rounded-2xl border border-[#6b473d] shadow-sm flex items-center gap-3">
+                    <div class="w-12 h-12 rounded-xl bg-amber-950/40 border border-amber-800 text-amber-400 flex items-center justify-center text-lg flex-shrink-0">
+                        <i class="fas fa-exclamation-circle"></i>
+                    </div>
+                    <div>
+                        <p class="text-[11px] font-bold uppercase text-[#B1D4D0]/60 tracking-wider">Skill Gaps</p>
+                        <p class="text-sm font-bold text-[#B1D4D0]">2 Skills Missing</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Main Two-Column Layout -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                
+                <div class="lg:col-span-7 space-y-6">
+                    
+                    <div class="bg-[#3d2621] rounded-2xl border border-[#6b473d] p-5 shadow-sm space-y-4">
+                        <div class="flex justify-between items-center border-b border-[#6b473d]/50 pb-3">
+                            <h3 class="font-bold text-[#B1D4D0] text-sm flex items-center gap-2">
+                                <i class="fas fa-briefcase text-[#B1D4D0]"></i> Recommended Entry Level Jobs
+                            </h3>
+                            <span class="text-xs text-[#B1D4D0]/60 font-medium">3 Active Matches</span>
+                        </div>
+
+                        <div class="space-y-3">
+                            <div class="p-3.5 bg-[#2f1d19] rounded-xl border border-[#6b473d] flex items-center justify-between gap-3">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-9 h-9 bg-[#B1D4D0] text-[#52352D] font-bold rounded-lg flex items-center justify-center text-xs">
+                                        M
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-[#B1D4D0] text-xs">Junior Frontend Engineer</h4>
+                                        <p class="text-[11px] text-[#B1D4D0]/70">TechLabs • Remote</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="badge bg-[#52352D] text-[#B1D4D0] border border-[#6b473d]">88% Match</span>
+                                    <button class="bg-[#B1D4D0] hover:bg-[#c4e2de] text-[#52352D] text-xs font-bold px-3 py-1.5 rounded-lg transition-colors">Apply</button>
+                                </div>
+                            </div>
+
+                            <div class="p-3.5 bg-[#2f1d19] rounded-xl border border-[#6b473d] flex items-center justify-between gap-3">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-9 h-9 bg-[#B1D4D0] text-[#52352D] font-bold rounded-lg flex items-center justify-center text-xs">
+                                        S
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-[#B1D4D0] text-xs">Full Stack Developer</h4>
+                                        <p class="text-[11px] text-[#B1D4D0]/70">Nexus Digital • Hybrid</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="badge bg-[#52352D] text-[#B1D4D0] border border-[#6b473d]">82% Match</span>
+                                    <button class="bg-[#B1D4D0] hover:bg-[#c4e2de] text-[#52352D] text-xs font-bold px-3 py-1.5 rounded-lg transition-colors">Apply</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-[#3d2621] rounded-2xl border border-[#6b473d] p-5 shadow-sm space-y-4">
+                        <h3 class="font-bold text-[#B1D4D0] text-sm border-b border-[#6b473d]/50 pb-3 flex items-center gap-2">
+                            <i class="fas fa-tasks text-[#B1D4D0]"></i> Skill Requirements Breakdown
+                        </h3>
+
+                        <div class="space-y-3.5">
+                            <div>
+                                <div class="flex justify-between text-xs mb-1 font-semibold">
+                                    <span class="text-[#B1D4D0]">Docker & Containerization</span>
+                                    <span class="text-amber-400">Missing (High Demand)</span>
+                                </div>
+                                <div class="w-full bg-[#2f1d19] rounded-full h-2">
+                                    <div class="bg-amber-500 h-2 rounded-full" style="width: 25%"></div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between text-xs mb-1 font-semibold">
+                                    <span class="text-[#B1D4D0]">React & Modern JS Frameworks</span>
+                                    <span class="text-[#B1D4D0]">Strong Match</span>
+                                </div>
+                                <div class="w-full bg-[#2f1d19] rounded-full h-2">
+                                    <div class="bg-[#B1D4D0] h-2 rounded-full" style="width: 90%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="lg:col-span-5 space-y-6">
+                    <div class="bg-[#3d2621] rounded-2xl border border-[#6b473d] p-5 shadow-sm space-y-4">
+                        <h3 class="font-bold text-[#B1D4D0] text-sm border-b border-[#6b473d]/50 pb-3 flex items-center gap-2">
+                            <i class="fas fa-route text-[#B1D4D0]"></i> 30-Day Upskilling Plan
+                        </h3>
+                        
+                        <div class="space-y-3 text-xs">
+                            <div class="p-3 bg-[#2f1d19] rounded-xl border border-[#6b473d] flex gap-3">
+                                <div class="w-6 h-6 rounded-full bg-[#B1D4D0] text-[#52352D] font-bold flex items-center justify-center flex-shrink-0 text-[11px]">1</div>
+                                <div>
+                                    <h4 class="font-bold text-[#B1D4D0]">Learn TypeScript Basics</h4>
+                                    <p class="text-[11px] text-[#B1D4D0]/70 mt-0.5">Focus on Interfaces, Types & Generics to pass HR filters.</p>
+                                </div>
+                            </div>
+
+                            <div class="p-3 bg-[#2f1d19] rounded-xl border border-[#6b473d] flex gap-3">
+                                <div class="w-6 h-6 rounded-full bg-[#52352D] text-[#B1D4D0] font-bold flex items-center justify-center flex-shrink-0 text-[11px]">2</div>
+                                <div>
+                                    <h4 class="font-bold text-[#B1D4D0]">Build 1 Full-Stack Project</h4>
+                                    <p class="text-[11px] text-[#B1D4D0]/70 mt-0.5">Integrate REST APIs with React and Node.js backend.</p>
+                                </div>
+                            </div>
+
+                            <div class="p-3 bg-[#2f1d19] rounded-xl border border-[#6b473d] flex gap-3">
+                                <div class="w-6 h-6 rounded-full bg-[#52352D] text-[#B1D4D0] font-bold flex items-center justify-center flex-shrink-0 text-[11px]">3</div>
+                                <div>
+                                    <h4 class="font-bold text-[#B1D4D0]">Tailor Resume for Entry-Level Roles</h4>
+                                    <p class="text-[11px] text-[#B1D4D0]/70 mt-0.5">Use Chrome Extension on job posts to match keywords.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button onclick="switchTab('screen3')" class="w-full bg-[#B1D4D0] hover:bg-[#c4e2de] text-[#52352D] font-bold py-2.5 rounded-xl text-xs transition-colors flex items-center justify-center gap-2 shadow-md">
+                            Try Live Extension Assistant <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ================= SCREEN 3: BROWSER EXTENSION VIEW ================= -->
+        <div id="screen3" class="page-content hidden fade-in w-full max-w-7xl mx-auto space-y-4 text-[#B1D4D0]">
+            
+            <div class="flex justify-between items-center mb-1">
+                <div>
+                    <h2 class="text-xl font-bold text-[#B1D4D0]">Browser Extension View</h2>
+                    <p class="text-xs text-[#B1D4D0]/80">How the AI assistant works while you browse job boards.</p>
+                </div>
+                <button id="toggle-sidebar-btn" class="md:hidden bg-[#B1D4D0] text-[#52352D] px-3 py-1.5 rounded-lg text-xs font-bold">
+                    Toggle AI Sidebar
+                </button>
+            </div>
+
+            <!-- Light Browser Mockup Container -->
+            <div class="browser-mockup-light">
+                
+                <div class="browser-header-light">
+                    <div class="flex gap-1.5">
+                        <div class="w-3 h-3 rounded-full bg-red-400"></div>
+                        <div class="w-3 h-3 rounded-full bg-amber-400"></div>
+                        <div class="w-3 h-3 rounded-full bg-emerald-400"></div>
+                    </div>
+                    <div class="flex gap-2 text-[#B1D4D0]/60 text-xs">
+                        <i class="fas fa-arrow-left cursor-pointer hover:text-[#B1D4D0]"></i>
+                        <i class="fas fa-arrow-right cursor-pointer hover:text-[#B1D4D0]"></i>
+                        <i class="fas fa-rotate-right cursor-pointer hover:text-[#B1D4D0]"></i>
+                    </div>
+                    <div class="browser-address-bar-light">
+                        <i class="fas fa-lock text-[#B1D4D0] mr-2 text-xs"></i>
+                        <span class="text-xs font-medium text-[#B1D4D0]">https://www.linkedin.com/jobs/view/frontend-engineer-238492</span>
+                    </div>
+                    <div class="w-7 h-7 bg-[#B1D4D0] text-[#52352D] rounded-full flex items-center justify-center font-bold text-xs shadow-sm">
+                        C
+                    </div>
+                </div>
+
+                <div class="browser-content relative bg-[#3d2621] flex flex-grow overflow-hidden">
+                    
+                    <div class="main-webpage flex-grow p-6 sm:p-8 overflow-y-auto bg-[#3d2621] border-r border-[#6b473d]">
+                        
+                        <div class="flex items-start gap-4 mb-5">
+                            <div class="w-14 h-14 bg-[#B1D4D0] text-[#52352D] rounded-lg flex items-center justify-center font-bold text-2xl flex-shrink-0 shadow-md">
+                                <i class="fab fa-linkedin-in"></i>
+                            </div>
+                            <div>
+                                <h1 class="text-2xl font-bold text-[#B1D4D0] leading-tight">Frontend Software Engineer</h1>
+                                <p class="text-sm text-[#B1D4D0]/80 font-medium mt-0.5">
+                                    TechCorp Inc. • <span class="text-[#B1D4D0]/60">San Francisco, CA (Hybrid)</span>
+                                </p>
+                                <p class="text-xs text-[#B1D4D0]/50 mt-1">Posted 2 days ago • 142 applicants</p>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-3 mb-6">
+                            <button class="bg-[#B1D4D0] hover:bg-[#c4e2de] text-[#52352D] px-6 py-2 rounded-full text-xs font-bold transition-all shadow-md">
+                                Easy Apply
+                            </button>
+                            <button class="border border-[#6b473d] hover:border-[#B1D4D0] text-[#B1D4D0] px-6 py-2 rounded-full text-xs font-bold transition-all">
+                                Save
+                            </button>
+                        </div>
+
+                        <hr class="border-[#6b473d]/50 my-5">
+
+                        <div class="space-y-4">
+                            <h3 class="font-bold text-[#B1D4D0] text-sm">About the job</h3>
+                            <p class="text-xs text-[#B1D4D0]/80 leading-relaxed">
+                                We are looking for a passionate Frontend Engineer to join our core product team. You will be responsible for building responsive, high-performance web applications used by millions.
+                            </p>
+
+                            <h4 class="font-bold text-[#B1D4D0] text-xs pt-2">Requirements</h4>
+                            <ul class="space-y-2.5 text-xs text-[#B1D4D0]/80 list-disc pl-4">
+                                <li>
+                                    3+ years of experience with <span class="keyword-highlight-green">React.js</span> and modern JavaScript (ES6+).
+                                </li>
+                                <li>
+                                    Strong proficiency in <span class="keyword-highlight-red">TypeScript</span>.
+                                </li>
+                                <li>
+                                    Experience with state management (Redux, Zustand).
+                                </li>
+                                <li>
+                                    Understanding of web performance optimization.
+                                </li>
+                            </ul>
+                        </div>
+
+                    </div>
+
+                    <div id="ai-sidebar" class="ai-sidebar p-4 flex flex-col justify-between overflow-y-auto">
+                        
+                        <div class="space-y-4">
+                            
+                            <div class="flex items-center gap-2 pb-2 border-b border-[#6b473d]">
+                                <div class="w-6 h-6 bg-[#B1D4D0] text-[#52352D] rounded flex items-center justify-center font-bold text-xs">
+                                    C
+                                </div>
+                                <span class="font-bold text-xs text-[#B1D4D0]">CareerLens Insights</span>
+                            </div>
+
+                            <div class="bg-[#2f1d19] p-5 rounded-xl border border-[#6b473d] text-center shadow-sm">
+                                <div class="relative w-20 h-20 mx-auto flex items-center justify-center mb-2">
+                                    <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                                        <path class="text-[#52352D]" stroke-width="3.5" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                        <path class="text-[#B1D4D0]" stroke-dasharray="75, 100" stroke-width="3.5" stroke-linecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                    </svg>
+                                    <span class="absolute text-lg font-extrabold text-[#B1D4D0]">75%</span>
+                                </div>
+                                <h4 class="font-bold text-[#B1D4D0] text-xs">Good Match</h4>
+                                <p class="text-[11px] text-[#B1D4D0]/70 mt-1 leading-snug">
+                                    You meet most core requirements, but lack some specifics.
+                                </p>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-2">
+                                <button onclick="alert('Tailoring Resume...')" class="bg-[#B1D4D0] hover:bg-[#c4e2de] text-[#52352D] text-[11px] font-bold py-2 px-2 rounded-lg transition-colors flex items-center justify-center gap-1 shadow-md">
+                                    <i class="fas fa-pen text-[10px]"></i> Tailor Resume
+                                </button>
+                                <button onclick="alert('Generating Cover Letter...')" class="bg-[#2f1d19] hover:bg-[#432924] border border-[#6b473d] text-[#B1D4D0] text-[11px] font-bold py-2 px-2 rounded-lg transition-colors flex items-center justify-center gap-1">
+                                    <i class="fas fa-file-alt text-[10px]"></i> Cover Letter
+                                </button>
+                            </div>
+
+                            <div class="bg-red-950/40 border border-red-800 rounded-xl p-3 space-y-2">
+                                <div class="flex items-center gap-1.5 text-[11px] font-bold text-red-300 uppercase tracking-wider">
+                                    <i class="fas fa-exclamation-circle text-red-400"></i> Missing Keywords
+                                </div>
+                                <div class="flex flex-wrap gap-1.5">
+                                    <span class="bg-red-900/60 text-red-200 text-[10px] font-semibold px-2 py-0.5 rounded border border-red-700">TypeScript</span>
+                                    <span class="bg-red-900/60 text-red-200 text-[10px] font-semibold px-2 py-0.5 rounded border border-red-700">Redux</span>
+                                </div>
+                                <p class="text-[10px] text-red-300/80 leading-tight pt-1">
+                                    Add these to your resume if you have experience with them before applying.
+                                </p>
+                            </div>
+
+                            <div class="bg-[#2f1d19] border border-[#6b473d] rounded-xl p-3 shadow-sm">
+                                <p class="text-[10px] font-bold text-[#B1D4D0]/60 uppercase tracking-wider">Estimated Salary</p>
+                                <p class="text-sm font-extrabold text-[#B1D4D0] mt-0.5">$95k - $120k / yr</p>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        function switchTab(screenId) {
+            document.querySelectorAll('.page-content').forEach(el => el.classList.add('hidden'));
+            
+            const targetScreen = document.getElementById(screenId);
+            if(targetScreen) targetScreen.classList.remove('hidden');
+            
+            document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
+            const activeTab = document.getElementById('tab-' + screenId);
+            if(activeTab) activeTab.classList.add('active');
+        }
+
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        if(mobileMenuBtn && mobileMenu) {
+            mobileMenuBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+        }
+        function closeMobileMenu() { if(mobileMenu) mobileMenu.classList.add('hidden'); }
+
+        const dropArea = document.getElementById('drop-area');
+        if(dropArea) {
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(e => {
+                dropArea.addEventListener(e, (evt) => { evt.preventDefault(); evt.stopPropagation(); });
+            });
+            dropArea.addEventListener('click', () => document.getElementById('fileElem').click());
+        }
+
+        function handleFiles(files) { if(files.length > 0) simulateUpload(); }
+
+        function simulateUpload() {
+            const uploadContent = document.getElementById('upload-content');
+            const processingContent = document.getElementById('processing-content');
+            const progressBar = document.getElementById('progress-bar');
+            
+            if(uploadContent && processingContent && progressBar) {
+                uploadContent.classList.add('hidden');
+                processingContent.classList.remove('hidden');
+
+                let width = 0;
+                const interval = setInterval(() => {
+                    if (width >= 100) {
+                        clearInterval(interval);
+                        setTimeout(() => {
+                            switchTab('screen2');
+                            uploadContent.classList.remove('hidden');
+                            processingContent.classList.add('hidden');
+                            progressBar.style.width = '0%';
+                        }, 300);
+                    } else {
+                        width += 25;
+                        progressBar.style.width = width + '%';
+                    }
+                }, 120);
+            }
+        }
+
+        function addProjectField() {
+            const container = document.getElementById('projects-container');
+            if(!container) return;
+            const html = `
+                <div class="p-3 bg-[#2f1d19] border border-[#6b473d] rounded-xl space-y-2 fade-in">
+                    <input type="text" placeholder="Project Name" class="w-full bg-[#3d2621] border border-[#6b473d] px-3 py-2 rounded-lg text-xs text-[#B1D4D0] placeholder-[#B1D4D0]/50 focus:outline-none focus:border-[#B1D4D0]">
+                    <textarea rows="2" placeholder="Brief description, tools used, or key results..." class="w-full bg-[#3d2621] border border-[#6b473d] px-3 py-2 rounded-lg text-xs text-[#B1D4D0] placeholder-[#B1D4D0]/50 focus:outline-none focus:border-[#B1D4D0] resize-none"></textarea>
+                    <div class="flex justify-between items-center gap-2">
+                        <input type="text" placeholder="Project / GitHub Link" class="bg-[#3d2621] border border-[#6b473d] px-3 py-1.5 rounded-lg text-[11px] text-[#B1D4D0] placeholder-[#B1D4D0]/50 focus:outline-none focus:border-[#B1D4D0] flex-grow">
+                        <button onclick="this.closest('.p-3').remove()" class="text-xs text-red-400 hover:text-red-300 font-medium px-1">Remove</button>
+                    </div>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', html);
+        }
+
+        const sidebar = document.getElementById('ai-sidebar');
+        const toggleBtn = document.getElementById('toggle-sidebar-btn');
+        if(sidebar && toggleBtn) {
+            toggleBtn.addEventListener('click', () => sidebar.classList.toggle('active'));
+        }
+
+        switchTab('screen1');
+    </script>
+</body>
+</html>
