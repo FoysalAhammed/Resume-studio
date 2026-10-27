@@ -1,0 +1,91 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    color-scheme: dark;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-ink text-brand font-sans antialiased;
+    overflow-x: hidden;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply text-brand;
+  }
+
+  :focus-visible {
+    @apply outline-none ring-2 ring-brand/80 ring-offset-2 ring-offset-ink-850;
+  }
+
+  /* Respect the operating system setting... */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+    }
+  }
+}
+
+/* ...and the in-app preference, which sets data-reduced-motion on <html>. */
+html[data-reduced-motion='true'] *,
+html[data-reduced-motion='true'] *::before,
+html[data-reduced-motion='true'] *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+}
+
+@layer components {
+  .card {
+    @apply rounded-2xl border border-ink-600 bg-ink-800 shadow-card;
+  }
+
+  .card-flat {
+    @apply rounded-2xl border border-ink-600 bg-ink-850;
+  }
+
+  .label {
+    @apply mb-1.5 block text-xs font-semibold uppercase tracking-wide text-brand/60;
+  }
+
+  .input {
+    @apply w-full rounded-xl border border-ink-600 bg-ink-850 px-3 py-2.5 text-sm text-brand placeholder-brand/40 transition-colors focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand;
+  }
+
+  .input-error {
+    @apply border-danger focus:border-danger focus:ring-danger;
+  }
+
+  .hint {
+    @apply mt-1 text-[11px] leading-relaxed text-brand/50;
+  }
+
+  .link {
+    @apply text-brand underline decoration-brand/40 underline-offset-2 transition-colors hover:text-brand-hover hover:decoration-brand;
+  }
+
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(177, 212, 208, 0.35) transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: rgba(177, 212, 208, 0.3);
+    border-radius: 9999px;
+  }
+}
