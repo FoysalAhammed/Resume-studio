@@ -27,10 +27,25 @@ routers still see `/api/health` and friends.
 
 1. Push the repository to GitHub/GitLab/Bitbucket.
 2. In Vercel, **Add New → Project** and import the repository.
-3. Leave the **Root Directory** as the repository root. Vercel reads `vercel.json`
-   automatically, so the build command, output directory and function settings are
-   already set.
-4. Add environment variables (all optional, see below) and press **Deploy**.
+3. **Root Directory must stay as the repository root.** Vercel often suggests a
+   subdirectory such as `apps/web` during import. Clear that suggestion, or set it in
+   **Settings → General → Root Directory** and redeploy. This is not optional: the API
+   imports `@careerlens/core` from `packages/core`, so the build needs the whole repo,
+   not just the web app.
+4. Vercel reads `vercel.json` automatically, so the build command, output directory and
+   function settings are already set.
+5. Add environment variables (all optional, see below) and press **Deploy**.
+
+**If the Root Directory is wrong** you will see this in the build log:
+
+```
+npm error workspace @careerlens/web@1.0.0
+npm error location /vercel/path0/apps/web
+npm error Missing script: "build:web"
+```
+
+That is npm looking for the root script inside `apps/web`. Fix the Root Directory and
+redeploy; no code or config change is needed.
 
 No `vercel.json` edits are needed for the default setup. If the dashboard asks you to
 pick a framework preset, choose **Other**, because the config already defines everything.
