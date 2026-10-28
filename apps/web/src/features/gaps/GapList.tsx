@@ -10,7 +10,7 @@ const IMPORTANCE_TONE: Record<SkillGap['importance'], 'danger' | 'caution' | 'ne
   low: 'neutral',
 };
 
-/** Shared, read-only gap list used by the job detail page and the gaps page. */
+/** Read-only list, shared with the job detail page. */
 export function GapList({ gaps, emptyMessage }: { gaps: SkillGap[]; emptyMessage: string }) {
   const [openId, setOpenId] = useState<string | null>(gaps[0]?.id ?? null);
 
@@ -77,7 +77,7 @@ export function GapList({ gaps, emptyMessage }: { gaps: SkillGap[]; emptyMessage
                       </ul>
                     ) : (
                       <p className="mt-1.5 text-[11px] text-brand/60">
-                        None. That does not mean the skill is absent — it means your profile has no evidence for it yet.
+                        None yet. That doesn't mean the skill is missing, just that your profile has no evidence for it.
                       </p>
                     )}
                   </div>
@@ -104,8 +104,8 @@ export function GapList({ gaps, emptyMessage }: { gaps: SkillGap[]; emptyMessage
                   ) : null}
 
                   <p className="text-[10px] leading-relaxed text-brand/45">
-                    Priority is an internal recommendation derived from the advert's importance and the evidence you already have. It is not
-                    employment-market data.
+                    Priority is an internal recommendation from the advert's importance and the evidence you already have. It is not
+                    job-market data.
                   </p>
                 </div>
               ) : null}
@@ -124,7 +124,7 @@ export function GapSummary({ gaps }: { gaps: SkillGap[] }) {
     <Card>
       <CardHeader
         title="What this means"
-        description="Derived from the requirement matches above. Every number here comes from the deterministic engine."
+        description="Every number comes from the requirement matches above, all from the deterministic engine."
       />
       <dl className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
         {[

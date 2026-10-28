@@ -17,14 +17,9 @@ export interface ItemListProps<T extends { id: string }> {
   renderForm: (draft: T, update: (patch: Partial<T>) => void) => ReactNode;
   onSave: (item: T) => void;
   onRemove: (item: T) => void;
-  /** Blocks saving until the draft passes its own validation. */
   validate?: (draft: T) => string | null;
 }
 
-/**
- * Add / edit / delete list used by every profile collection (education,
- * experience, projects, certifications). One implementation, four real usages.
- */
 export function ItemList<T extends { id: string }>({
   title,
   description,
@@ -202,10 +197,7 @@ export function EvidenceList({ items }: { items: { source: string; detail: strin
   );
 }
 
-/**
- * Comma separated list input. The typed text is held locally and only parsed
- * when the field loses focus, so intermediate states such as "React, " survive.
- */
+// Parsed on blur, so a half-typed entry like "React, " isn't wiped mid-keystroke.
 export function ListField({
   label,
   values,
@@ -258,7 +250,7 @@ export function ListField({
   );
 }
 
-/** Multi-line list input that keeps blank lines while the user is typing. */
+// Keeps blank lines while the user types.
 export function LinesField({
   label,
   lines,

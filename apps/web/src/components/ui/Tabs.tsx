@@ -8,7 +8,7 @@ export interface TabDefinition<T extends string> {
   badge?: ReactNode;
 }
 
-/** Keyboard accessible tab list (arrow keys move between tabs). */
+// Arrow keys move between tabs.
 export function Tabs<T extends string>({
   tabs,
   active,

@@ -129,9 +129,8 @@ export interface InterviewRequest {
 }
 
 /**
- * Deterministic question generation from the advert, the profile and a curated
- * bank. The requested question types are allocated a quota so a mixed practice
- * session always covers every type the user asked for.
+ * Deterministic questions from the advert, the profile and a curated bank.
+ * Each requested type gets a quota so a mixed session covers what was asked for.
  */
 export function generateInterviewQuestions(request: InterviewRequest): InterviewQuestion[] {
   const { profile, job, difficulty, types } = request;
@@ -160,7 +159,6 @@ export function generateInterviewQuestions(request: InterviewRequest): Interview
     behavioural: [],
   };
 
-  // 1. Curated bank entries for the skills in play.
   for (const skill of relevantSkills) {
     for (const entry of BANK[skill.id] ?? []) {
       if (!allowedDifficulty.includes(entry.difficulty)) continue;
@@ -177,8 +175,7 @@ export function generateInterviewQuestions(request: InterviewRequest): Interview
     }
   }
 
-  // 2. Template questions for skills without a curated entry - or, when the user
-  //    picked one topic, an extra practical question so the session is not thin.
+  // Fall back to template questions when a skill has no curated entry.
   for (const skill of relevantSkills) {
     const hasCurated = Boolean(BANK[skill.id]);
     if (!hasCurated) {
@@ -190,7 +187,6 @@ export function generateInterviewQuestions(request: InterviewRequest): Interview
     }
   }
 
-  // 3. Generic pools. A focused topic session stays on that topic.
   if (!topicFilter) {
     for (const project of profile.projects.slice(0, 2)) {
       perType.project.push({
@@ -228,7 +224,6 @@ export function generateInterviewQuestions(request: InterviewRequest): Interview
     }
   }
 
-  // 4. Allocate a quota per requested type, then top up if a pool ran short.
   const activeTypes = (['technical', 'practical', 'project', 'behavioural'] as InterviewQuestionType[]).filter((type) => wanted.includes(type));
   const ordered = activeTypes.length ? activeTypes : (['technical'] as InterviewQuestionType[]);
   const base = Math.floor(count / ordered.length);
@@ -255,8 +250,8 @@ export function generateInterviewQuestions(request: InterviewRequest): Interview
 const STAR_MARKERS = ['situation', 'task', 'action', 'result', 'because', 'so that', 'as a result', 'i decided', 'we decided', 'afterwards'];
 
 /**
- * Heuristic-only feedback: keyword coverage plus structural signals.
- * It is explicitly labelled as heuristic and is not a validated assessment.
+ * Feedback from keyword coverage plus structural signals.
+ * Labelled heuristic, not a validated assessment.
  */
 export function evaluateAnswer(question: InterviewQuestion, answer: string): InterviewFeedback {
   const text = answer.trim();
@@ -287,7 +282,7 @@ export function evaluateAnswer(question: InterviewQuestion, answer: string): Int
   ];
   if (words < 30) notes.push('The answer is very short. A useful answer usually gives a specific situation, what you did and what changed.');
   if (missingPoints.length) notes.push(`Consider covering: ${missingPoints.slice(0, 3).join(', ')}.`);
-  if (!/\b\d+/.test(text)) notes.push('No concrete detail (number, timeframe, scale) was detected - specifics are what make an answer memorable.');
+  if (!/\b\d+/.test(text)) notes.push('No concrete detail (number, timeframe or scale) was found. Specifics are what make an answer memorable.');
 
   return {
     questionId: question.id,

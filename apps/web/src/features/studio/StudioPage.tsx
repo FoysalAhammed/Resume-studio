@@ -149,10 +149,10 @@ export default function StudioPage() {
     <div className="space-y-6">
       <PageHeader
         title="Resume Studio"
-        description="Rewrites are suggestions, never silent edits. Each one shows the original, the draft and the reason for the change, and you decide whether to apply it to your profile. Nothing is invented: when a result needs a figure, the studio asks you for it."
+        description="Rewrites are suggestions, not silent edits. You see the original, the draft and why it changed, then decide whether to apply it to your profile. Nothing is invented: when a result needs a figure, the studio asks you for one."
         action={
           <>
-            <SourceBadge source={Object.keys(aiOverrides).length ? 'ai' : 'local'} reason="Deterministic rewrite templates unless you request an AI rewrite" />
+            <SourceBadge source={Object.keys(aiOverrides).length ? 'ai' : 'local'} reason="Template rewrites unless you ask for AI" />
             <Badge tone="neutral">{items.length} sections</Badge>
           </>
         }
@@ -162,12 +162,12 @@ export default function StudioPage() {
         <CardHeader
           title="Tailor to an advert (optional)"
           icon={<Sparkles aria-hidden className="h-4 w-4" />}
-          description="Choosing an advert aligns the rewrites with its wording and reorders your experience bullets by relevance. It never adds a technology you have not recorded."
+          description="Choosing an advert aligns the rewrites with its wording and puts the most relevant experience bullets first. It never adds a technology you haven't recorded."
         />
         <div className="mt-4 grid gap-4 sm:grid-cols-2">
           <Field label="Target advert">
             <Select value={jobId} onChange={(event) => setJobId(event.target.value)}>
-              <option value="">No advert — generic improvements</option>
+              <option value="">No advert, general improvements</option>
               {workspace.jobs.map((item) => (
                 <option key={item.id} value={item.id}>
                   {item.title} — {item.company}
@@ -179,7 +179,7 @@ export default function StudioPage() {
             <p className="text-[11px] leading-relaxed text-brand/60">
               {job
                 ? `Aligning with ${job.title}: ${job.requirements.length} extracted requirements are used as keyword guidance only.`
-                : 'Without an advert the studio applies general CV writing rules.'}
+                : 'Without an advert the studio uses general CV writing rules.'}
             </p>
           </div>
         </div>
@@ -189,7 +189,7 @@ export default function StudioPage() {
         <EmptyState
           icon={<PenLine aria-hidden className="h-8 w-8" />}
           title="Nothing to rewrite yet"
-          description="Import a CV or add experience and projects to your profile, then the studio can propose stronger wording for each section."
+          description="Import a CV or add experience and projects, then the studio can suggest stronger wording for each section."
         />
       ) : (
         <div className="space-y-4">
@@ -216,13 +216,13 @@ export default function StudioPage() {
                     <p className="mt-1.5 text-[11px] leading-relaxed text-brand/75">{active.original}</p>
                   </div>
                   <div className="rounded-xl border border-brand/40 bg-brand-soft p-3">
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-brand/70">Draft (review before using)</p>
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-brand/70">Draft (review first)</p>
                     <p className="mt-1.5 text-[11px] leading-relaxed text-brand">{active.revised}</p>
                   </div>
                 </div>
 
                 <div className="mt-3 rounded-xl border border-ink-600 bg-ink-900/40 p-3">
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-brand/55">Word level comparison</p>
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-brand/55">Word-level changes</p>
                   <p className="mt-1.5 text-[11px] leading-relaxed">
                     {segments.map((segment, index) => (
                       <span
@@ -246,7 +246,7 @@ export default function StudioPage() {
 
                 {active.needsUserInput && active.promptFor ? (
                   <p className="mt-2 rounded-xl border border-caution/40 bg-caution-soft p-3 text-[11px] leading-relaxed text-caution">
-                    The studio needs information from you: {active.promptFor}
+                    The studio needs a detail from you: {active.promptFor}
                   </p>
                 ) : null}
 
@@ -255,7 +255,7 @@ export default function StudioPage() {
                     size="sm"
                     onClick={() => {
                       item.apply(active.revised);
-                      toast.success('Applied to your profile', 'The original wording is replaced in your saved profile. You can edit it again at any time.');
+                      toast.success('Applied to your profile', 'Replaced in your saved profile. You can edit it again whenever.');
                     }}
                     icon={<Check aria-hidden className="h-3.5 w-3.5" />}
                   >
@@ -295,7 +295,7 @@ export default function StudioPage() {
         <CardHeader
           title="Tailored experience order"
           icon={<ArrowRight aria-hidden className="h-4 w-4" />}
-          description="When an advert is selected, achievements containing its keywords are listed first. The wording itself is unchanged."
+          description="With an advert selected, achievements containing its keywords come first. The wording stays the same."
         />
         {tailored.length ? (
           <div className="mt-4 space-y-4">
@@ -321,7 +321,7 @@ export default function StudioPage() {
         <CardHeader
           title="Export a clean resume"
           icon={<FileText aria-hidden className="h-4 w-4" />}
-          description="Assembled from your recorded profile data only, with no invented metrics. Print to PDF, or download as plain text."
+          description="Built from your recorded profile only, with no invented metrics. Print to PDF or download as plain text."
           action={
             <>
               <Button
@@ -365,8 +365,8 @@ export default function StudioPage() {
           {exportText}
         </pre>
         <p className="mt-3 text-[11px] leading-relaxed text-brand/55">
-          DOCX export is not implemented in this build: it needs a document generation library rather than a text dump. It is listed as future work
-          in docs/LIMITATIONS.md.
+          DOCX export isn't in this build: it needs a document generation library, not a text dump. It's listed as future work in
+          docs/LIMITATIONS.md.
         </p>
       </Card>
     </div>

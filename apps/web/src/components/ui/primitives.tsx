@@ -2,8 +2,6 @@ import type { ButtonHTMLAttributes, InputHTMLAttributes, ReactNode, SelectHTMLAt
 import { Loader2 } from 'lucide-react';
 import { classNames } from '../../lib/format';
 
-/* --------------------------------------------------------------- button -- */
-
 type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger';
 type ButtonSize = 'sm' | 'md' | 'lg';
 
@@ -59,8 +57,6 @@ export function Button({
   );
 }
 
-/* ----------------------------------------------------------------- card -- */
-
 export function Card({ children, className, as: Tag = 'section' }: { children: ReactNode; className?: string; as?: 'section' | 'div' | 'article' }) {
   return <Tag className={classNames('card p-5', className)}>{children}</Tag>;
 }
@@ -104,8 +100,6 @@ export function PageHeader({ title, description, action }: { title: string; desc
   );
 }
 
-/* ---------------------------------------------------------------- badge -- */
-
 type BadgeTone = 'brand' | 'success' | 'caution' | 'danger' | 'neutral';
 
 const BADGE_TONES: Record<BadgeTone, string> = {
@@ -127,10 +121,7 @@ export function Badge({ children, tone = 'neutral', className, title }: { childr
   );
 }
 
-/**
- * Labels where a result came from. The application never presents template
- * output as if it were AI, so this badge is used next to generated content.
- */
+// Shows where a result came from, so template output is never dressed up as AI.
 export function SourceBadge({ source, reason }: { source: 'local' | 'ai' | 'sample'; reason?: string }) {
   if (source === 'ai') {
     return (
@@ -147,13 +138,11 @@ export function SourceBadge({ source, reason }: { source: 'local' | 'ai' | 'samp
     );
   }
   return (
-    <Badge tone="neutral" title={reason ?? 'Produced locally by deterministic rules - no AI provider was used'}>
+    <Badge tone="neutral" title={reason ?? 'Produced locally by rules, no AI provider used'}>
       Local rules
     </Badge>
   );
 }
-
-/* -------------------------------------------------------------- progress -- */
 
 export function Progress({ value, tone = 'brand', label }: { value: number; tone?: BadgeTone; label?: string }) {
   const clamped = Math.max(0, Math.min(100, Math.round(value)));
@@ -172,8 +161,6 @@ export function Progress({ value, tone = 'brand', label }: { value: number; tone
     </div>
   );
 }
-
-/* ----------------------------------------------------------- form fields -- */
 
 export function Field({
   label,
@@ -238,8 +225,6 @@ export function Checkbox({
     </label>
   );
 }
-
-/* ------------------------------------------------------------ empty/skel -- */
 
 export function EmptyState({
   icon,

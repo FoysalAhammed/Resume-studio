@@ -49,7 +49,7 @@ export function healthPayload(): ApiHealth {
     mode: aiConfigured() ? 'ai' : 'local',
     ai: {
       configured: aiConfigured(),
-      // The key itself is never returned, only the endpoint and model in use.
+      // Never return the key, only the model and base URL in use.
       model: aiConfigured() ? config.ai.model : null,
       baseUrl: aiConfigured() ? config.ai.baseUrl : null,
     },

@@ -60,7 +60,6 @@ export interface SectionSlice {
   lines: string[];
 }
 
-/** Splits advert text into labelled sections using heading heuristics. */
 export function splitIntoSections(text: string): SectionSlice[] {
   const lines = splitLines(normalizeWhitespace(text)).filter((line) => line.length > 0);
   const sections: SectionSlice[] = [];
@@ -153,10 +152,7 @@ export interface RequirementExtractionResult {
   sections: { id: string; heading: string; lines: number }[];
 }
 
-/**
- * Deterministic, rule-based requirement extraction.
- * No network calls, no randomness: the same advert always yields the same result.
- */
+/** Rule-based extraction. No network, no randomness: the same advert gives the same result. */
 export function extractJobRequirements(rawText: string): RequirementExtractionResult {
   const text = normalizeWhitespace(rawText).slice(0, LIMITS.maxJobTextChars);
   const sections = splitIntoSections(text);

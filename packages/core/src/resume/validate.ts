@@ -25,9 +25,8 @@ export function extensionOf(name: string): string {
 }
 
 /**
- * Client-side validation of a selected resume. The server repeats these checks
- * and additionally inspects the file signature, because nothing from the browser
- * can be trusted on its own.
+ * Client-side checks on a selected resume. The server repeats them and also
+ * reads the file signature, since the browser cannot be trusted on its own.
  */
 export function validateResumeFile(file: FileDescriptor, limits = LIMITS): FileValidationResult {
   const errors: string[] = [];
@@ -75,7 +74,7 @@ export function kindForExtension(extension: string): FileKind {
   return 'unknown';
 }
 
-/** Inspects raw bytes - the only trustworthy way to identify an upload. */
+/** Reads the raw bytes, the only trustworthy way to identify an upload. */
 export function detectFileKind(bytes: Uint8Array, fallback: FileKind = 'unknown'): FileKind {
   if (bytes.length >= 4) {
     if (bytes[0] === 0x25 && bytes[1] === 0x50 && bytes[2] === 0x44 && bytes[3] === 0x46) return 'pdf';

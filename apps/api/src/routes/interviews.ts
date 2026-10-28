@@ -19,7 +19,6 @@ export const interviewsRouter = Router();
 type InterviewBody = z.infer<typeof interviewRequestSchema>;
 type AnalyzeBody = z.infer<typeof interviewAnalyzeRequestSchema>;
 
-/** POST /api/interviews/generate */
 interviewsRouter.post(
   '/generate',
   rateLimit({ name: 'interview-generate', windowMs: 60_000, max: 20 }),
@@ -41,7 +40,7 @@ interviewsRouter.post(
 
     if (body.useAi) {
       if (!aiAvailable()) {
-        ai.reason = 'No AI provider is configured; curated template questions were used instead.';
+        ai.reason = 'No AI provider is configured, so template questions were used.';
       } else {
         const result = await aiGenerateInterviewQuestions({
           role: body.job?.title || body.profile.headline || 'the target role',
@@ -85,7 +84,6 @@ interviewsRouter.post(
   }),
 );
 
-/** POST /api/interviews/evaluate - heuristic feedback on one answer. */
 interviewsRouter.post(
   '/evaluate',
   rateLimit({ name: 'interview-evaluate', windowMs: 60_000, max: 60 }),
@@ -96,7 +94,7 @@ interviewsRouter.post(
     res.json({
       feedback,
       source: 'local',
-      notice: 'Heuristic scoring only. It cannot predict an interview outcome and is not a substitute for a human reviewer.',
+      notice: 'Heuristic scoring only. It cannot predict an interview outcome or replace a human reviewer.',
     });
   }),
 );

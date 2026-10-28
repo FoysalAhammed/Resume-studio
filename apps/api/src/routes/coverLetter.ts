@@ -11,7 +11,6 @@ export const coverLetterRouter = Router();
 
 type CoverLetterBody = z.infer<typeof coverLetterRequestSchema>;
 
-/** POST /api/cover-letter/generate */
 coverLetterRouter.post(
   '/generate',
   rateLimit({ name: 'cover-letter', windowMs: 60_000, max: 20 }),
@@ -30,7 +29,7 @@ coverLetterRouter.post(
 
     if (body.useAi) {
       if (!aiAvailable()) {
-        ai.reason = 'No AI provider is configured; the deterministic template letter was used instead.';
+        ai.reason = 'No AI provider is configured, so the template letter was used.';
       } else {
         const result = await aiDraftCoverLetter({
           applicant: {

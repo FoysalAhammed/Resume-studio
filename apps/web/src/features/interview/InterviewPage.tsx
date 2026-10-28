@@ -112,8 +112,7 @@ export default function InterviewPage() {
       toast.error('Write an answer first', 'Even a few sentences help you practise structuring a response.');
       return;
     }
-    // The API evaluates with the same heuristic when reachable; the local
-    // evaluator is identical, so the offline path is not a downgrade.
+    // Same heuristic runs on the server, so offline results are identical.
     const response = await api.evaluateInterview(question, text);
     const result = response.ok ? response.data.feedback : evaluateAnswer(question, text);
     setFeedback((current) => ({ ...current, [question.id]: result }));
@@ -138,7 +137,7 @@ export default function InterviewPage() {
     <div className="space-y-6">
       <PageHeader
         title="Interview Preparation"
-        description="Questions are drawn from the advert's requirements, your recorded skills and projects, and a curated bank. Feedback on your answers is a keyword and structure heuristic — it is not a validated assessment and cannot predict an interview outcome."
+        description="Questions come from the advert, your skills and projects, and a curated bank. Answer feedback is just a keyword and structure heuristic, not a real assessment."
         action={
           <>
             <SourceBadge source={questions.length ? source : 'local'} />
@@ -156,7 +155,7 @@ export default function InterviewPage() {
         <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <Field label="Target advert (optional)">
             <Select value={jobId} onChange={(event) => setJobId(event.target.value)}>
-              <option value="">No advert — use my profile only</option>
+              <option value="">No advert, use my profile only</option>
               {workspace.jobs.map((item) => (
                 <option key={item.id} value={item.id}>
                   {item.title} — {item.company}
@@ -216,7 +215,7 @@ export default function InterviewPage() {
           {aiAvailable ? (
             <Checkbox
               label="Generate questions with the configured AI provider"
-              description="The model receives requirement labels, your skill names and project names — not your full profile."
+              description="The model only sees requirement labels, your skill names and project names, never your full profile."
               checked={useAi}
               onChange={(event) => setUseAi(event.target.checked)}
             />
@@ -241,7 +240,7 @@ export default function InterviewPage() {
           <EmptyState
             icon={<MessagesSquare aria-hidden className="h-8 w-8" />}
             title="No questions generated yet"
-            description="Generate a set above. Technical questions come from the advert and your skills, project questions from your own work, and behavioural questions from a curated bank."
+            description="Generate a set above. Technical questions come from the advert and your skills, project questions from your work, and behavioural ones from a curated bank."
             action={
               !workspace.profile.skills.length ? (
                 <Link to="/profile" className="rounded-xl bg-brand px-4 py-2.5 text-xs font-bold text-ink transition-colors hover:bg-brand-hover">

@@ -2,7 +2,7 @@ import type { CareerProfile, ImprovementSuggestion, JobDescription, ProjectEntry
 import { findLexiconHits } from '../skills/graph';
 import { countTerm, makeId, normalizeWhitespace } from '../util/text';
 
-/** Weak openers mapped onto concrete, past-tense action verbs. */
+/** Weak openers mapped to past-tense action verbs. */
 const OPENER_REWRITES: { pattern: RegExp; verb: string }[] = [
   { pattern: /^(i\s+)?(was\s+)?(tasked|responsible)\s+(with|for)\s+/i, verb: 'Owned' },
   { pattern: /^(i\s+)?worked\s+(on|with)\s+/i, verb: 'Delivered' },
@@ -62,11 +62,7 @@ function advertiseMentions(text: string, job?: JobDescription): string[] {
     .slice(0, 4);
 }
 
-/**
- * Rewrites a single resume bullet with deterministic rules.
- * It never invents a metric: when a result is missing it asks the user for one
- * and leaves the sentence in neutral wording.
- */
+/** Rewrites one bullet with fixed rules. It never invents a metric: if a result is missing it asks for one. */
 export function improveBullet(
   original: string,
   kind: ImprovementSuggestion['kind'],
@@ -81,8 +77,8 @@ export function improveBullet(
 
   const rationale: string[] = [];
   if (rewritten.rewrote) rationale.push('Replaced a passive opener with a concrete action verb.');
-  if (!hasStrongOpener(rewritten.text) && !rewritten.rewrote) rationale.push('Starts with a descriptive phrase rather than an action - leading with a verb reads as impact.');
-  if (source.match(FIRST_PERSON_RE)) rationale.push('Removed first-person pronouns, which is the convention for CV bullets.');
+  if (!hasStrongOpener(rewritten.text) && !rewritten.rewrote) rationale.push('Starts with a descriptive phrase. Leading with a verb reads as impact.');
+  if (source.match(FIRST_PERSON_RE)) rationale.push('Removed first-person pronouns, the usual convention on a CV.');
   if (!/[.!?]$/.test(source.trim())) rationale.push('Added end punctuation for a consistent list.');
   if (skillHits.length) rationale.push(`Named technologies detected: ${skillHits.join(', ')}.`);
   if (advertMentions.length) rationale.push(`Aligns with the advert's wording for: ${advertMentions.join(', ')}.`);
@@ -90,7 +86,7 @@ export function improveBullet(
     rationale.push(`This bullet does not mention any of the advert's requirement keywords. If you used one of them here, name it explicitly.`);
   }
   if (!hasMetric) {
-    rationale.push('No measurable outcome found. A number makes the claim verifiable - but never add one you cannot prove.');
+    rationale.push('No measurable outcome found. A number makes the claim verifiable, but never add one you cannot prove.');
   }
 
   const needsUserInput = !hasMetric;
@@ -102,7 +98,7 @@ export function improveBullet(
     rationale: rationale.join(' ') || 'The wording is already action-led and concise.',
     needsUserInput,
     promptFor: needsUserInput
-      ? 'What changed as a result of this work (users reached, time saved, percentage improved)? Only add it if you can verify the figure.'
+      ? 'What changed as a result of this work? Only add a figure you can verify.'
       : undefined,
   };
 }
@@ -123,9 +119,9 @@ export function improveSummary(profile: CareerProfile, job?: JobDescription): Im
   parts.push('Looking for a role where these skills are used on real products.');
 
   const rationale: string[] = [];
-  if (!original) rationale.push('Your profile has no summary yet, so this draft fills that gap using facts already recorded in your profile.');
+  if (!original) rationale.push('There is no summary yet, so this draft fills the gap with facts already recorded in your profile.');
   else rationale.push('Restructured so the role, the tools and the most recent experience appear in the first two lines.');
-  if (original.length > 500) rationale.push('The original was long; recruiters read the first two lines before deciding.');
+  if (original.length > 500) rationale.push('The original was long. Recruiters read the first two lines before deciding.');
   if (job) rationale.push(`Tailored to the "${job.title}" advert.`);
   rationale.push('Review the wording: it only uses information you have already recorded.');
 
@@ -141,7 +137,7 @@ export function improveSummary(profile: CareerProfile, job?: JobDescription): Im
 }
 
 export function improveProject(project: ProjectEntry, job?: JobDescription): ImprovementSuggestion {
-  const original = [project.name, project.description].filter(Boolean).join(' — ');
+  const original = [project.name, project.description].filter(Boolean).join(' - ');
   const techniques = project.technologies.length ? project.technologies.join(', ') : findLexiconHits(`${project.name} ${project.description}`).map((hit) => hit.skill.name).join(', ');
   const parts = [`${project.name}|`, project.description.replace(/\.$/, '')];
   if (techniques) parts.push(`Built with ${techniques}.`);
@@ -149,9 +145,9 @@ export function improveProject(project: ProjectEntry, job?: JobDescription): Imp
   if (overstated) parts.push('Described in plain, factual language.');
 
   const rationale: string[] = [];
-  rationale.push('Leads with the project name and what it does, then the stack — the order a reviewer scans.');
-  if (project.technologies.length === 0) rationale.push('No technologies were listed; adding the real stack makes the project useful evidence for matching.');
-  if (!project.link) rationale.push('No repository or demo link recorded — adding one makes the claim verifiable.');
+  rationale.push('Leads with the project name and what it does, then the stack. That is the order a reviewer scans.');
+  if (project.technologies.length === 0) rationale.push('No technologies were listed. Adding the real stack makes the project useful evidence for matching.');
+  if (!project.link) rationale.push('No repository or demo link recorded. Adding one makes the claim verifiable.');
   if (job) rationale.push(`Checked against the "${job.title}" advert so you can reuse the wording where it is genuinely accurate.`);
 
   return {
@@ -220,7 +216,7 @@ export function draftResumeText(profile: CareerProfile, job?: JobDescription): s
   if (profile.experience.length) {
     lines.push('EXPERIENCE');
     for (const entry of profile.experience) {
-      lines.push(`${entry.title} — ${entry.company}${entry.location ? `, ${entry.location}` : ''}`);
+      lines.push(`${entry.title} - ${entry.company}${entry.location ? `, ${entry.location}` : ''}`);
       lines.push(`${entry.startDate} - ${entry.current ? 'Present' : entry.endDate ?? ''}`);
       if (entry.summary) lines.push(`- ${entry.summary}`);
       for (const achievement of entry.achievements) lines.push(`- ${achievement}`);
@@ -243,7 +239,7 @@ export function draftResumeText(profile: CareerProfile, job?: JobDescription): s
     lines.push('EDUCATION');
     for (const entry of profile.education) {
       const years = [entry.startYear, entry.endYear].filter(Boolean).join(' - ');
-      lines.push(`${entry.degree}${entry.fieldOfStudy ? `, ${entry.fieldOfStudy}` : ''} — ${entry.institution}${years ? ` (${years})` : ''}`);
+      lines.push(`${entry.degree}${entry.fieldOfStudy ? `, ${entry.fieldOfStudy}` : ''} - ${entry.institution}${years ? ` (${years})` : ''}`);
     }
     lines.push('');
   }
@@ -251,7 +247,7 @@ export function draftResumeText(profile: CareerProfile, job?: JobDescription): s
   if (profile.certifications.length) {
     lines.push('CERTIFICATIONS');
     for (const entry of profile.certifications) {
-      lines.push(`${entry.name} — ${entry.issuer}${entry.year ? ` (${entry.year})` : ''}`);
+      lines.push(`${entry.name} - ${entry.issuer}${entry.year ? ` (${entry.year})` : ''}`);
     }
     lines.push('');
   }

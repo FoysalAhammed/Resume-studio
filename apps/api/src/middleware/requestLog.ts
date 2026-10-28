@@ -1,9 +1,6 @@
 import type { RequestHandler } from 'express';
 
-/**
- * Logs method, route, status and duration only.
- * Request bodies (which can contain a resume or job text) are never logged.
- */
+// Logs method, route, status and duration. Never the body, which may hold a resume.
 export function requestLogger(): RequestHandler {
   return (req, res, next) => {
     const started = Date.now();

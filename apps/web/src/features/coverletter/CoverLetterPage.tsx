@@ -62,14 +62,14 @@ export default function CoverLetterPage() {
           toast.success('AI-assisted draft ready', 'Check every sentence before sending it.');
           return;
         }
-        toast.warning('AI generation unavailable', `${response.error} A deterministic draft was produced instead.`);
+        toast.warning('AI generation unavailable', `${response.error} A template draft was produced instead.`);
       }
 
       const local = generateCoverLetter({ profile: workspace.profile, job, motivation, addressGap });
       setDraft(local);
       setSource('local');
       setNotes(local.generated.notes);
-      toast.success('Draft ready', 'Built from the facts recorded in your profile.');
+      toast.success('Draft ready', 'Built from the facts in your profile.');
     } finally {
       setBusy(false);
     }
@@ -89,7 +89,7 @@ export default function CoverLetterPage() {
     <div className="space-y-6">
       <PageHeader
         title="Cover Letter Generator"
-        description="A draft assembled from facts already in your profile, plus your own motivation. It never invents a qualification, employer or metric, and it never claims to submit anything on your behalf."
+        description="A draft built from facts already in your profile, plus your own motivation. It never invents a qualification, employer or metric, and it never submits anything for you."
         action={
           <>
             <SourceBadge source={draft ? source : 'local'} />
@@ -102,7 +102,7 @@ export default function CoverLetterPage() {
         <CardHeader
           title="Step 1 · Choose the target and add your own words"
           icon={<Mail aria-hidden className="h-4 w-4" />}
-          description="The motivation paragraph is the part only you can write. If you leave it empty the draft inserts a bracketed instruction rather than fabricating a reason."
+          description="The motivation paragraph is the part only you can write. Leave it empty and the draft inserts a bracketed prompt instead of inventing a reason."
         />
 
         <div className="mt-4 grid gap-4 sm:grid-cols-2">
@@ -120,7 +120,7 @@ export default function CoverLetterPage() {
             <p className="text-[11px] leading-relaxed text-brand/60">
               {job
                 ? `Requirements available for the letter: ${job.requirements.slice(0, 6).map((requirement) => requirement.label).join(', ') || 'none extracted'}`
-                : 'Only adverts you have analysed can be targeted, so every claim can be traced back to evidence.'}
+                : 'You can only target an advert you have analysed, so every claim traces back to evidence.'}
             </p>
           </div>
         </div>
@@ -128,7 +128,7 @@ export default function CoverLetterPage() {
         <Field
           label="Why do you want this role?"
           className="mt-4"
-          hint="Two or three sentences in your own voice. This is inserted verbatim."
+          hint="Two or three sentences in your own voice. It goes in word for word."
         >
           <Textarea
             rows={4}
@@ -141,22 +141,22 @@ export default function CoverLetterPage() {
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
           <Checkbox
             label="Include a sentence about closing your biggest gap"
-            description="Honest and optional. Only include it if you genuinely want to raise it."
+            description="Optional. Only include it if you really want to raise it."
             checked={addressGap}
             onChange={(event) => setAddressGap(event.target.checked)}
           />
           {aiAvailable ? (
             <Checkbox
               label="Draft with the configured AI provider"
-              description="The model receives only your profile summary, recent experience, projects, the advert's requirement labels and your motivation."
+              description="The model only receives your profile summary, recent experience, projects, the advert's requirement labels and your motivation."
               checked={useAi}
               onChange={(event) => setUseAi(event.target.checked)}
             />
           ) : (
             <div className="rounded-xl border border-ink-600 bg-ink-850 p-3 text-[11px] leading-relaxed text-brand/60">
               {apiStatus === 'online'
-                ? 'No AI provider is configured, so the deterministic template letter is used. It is built from your recorded facts and is fully usable.'
-                : 'The API is offline, so the deterministic template letter is used in your browser. Nothing leaves this device.'}
+                ? 'No AI provider is configured, so the template letter is used. It is built from your recorded facts and works fine.'
+                : 'The API is offline, so the template letter is built in your browser. Nothing leaves this device.'}
             </div>
           )}
         </div>
@@ -167,7 +167,7 @@ export default function CoverLetterPage() {
           </Button>
           {!workspace.profile.displayName ? (
             <span className="text-[11px] text-caution">
-              Add your name on the profile page first — the letter needs a signature.
+              Add your name on the profile page first. The letter needs a signature.
             </span>
           ) : null}
         </div>
@@ -254,7 +254,7 @@ export default function CoverLetterPage() {
             </Card>
 
             <Card>
-              <CardHeader title="How this draft was produced" description="Provenance for every claim in the letter." />
+              <CardHeader title="How this draft was built" description="Where every claim in the letter came from." />
               <ul className="mt-3 space-y-2">
                 {notes.map((note, index) => (
                   <li key={index} className="text-[11px] leading-relaxed text-brand/70">
@@ -270,7 +270,7 @@ export default function CoverLetterPage() {
           <EmptyState
             icon={<Mail aria-hidden className="h-8 w-8" />}
             title="No draft generated yet"
-            description="Choose an advert, add your own motivation, then generate. The local template path works with no API server and no API key."
+            description="Choose an advert, add your motivation, then generate. The template path needs no API server and no API key."
             action={
               workspace.jobs.length === 0 ? (
                 <Link to="/jobs" className="rounded-xl bg-brand px-4 py-2.5 text-xs font-bold text-ink transition-colors hover:bg-brand-hover">

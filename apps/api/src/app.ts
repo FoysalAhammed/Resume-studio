@@ -13,10 +13,8 @@ import { coverLetterRouter } from './routes/coverLetter';
 import { interviewsRouter } from './routes/interviews';
 import { extensionRouter } from './routes/extension';
 
-/**
- * Browser origins allowed to call the API. Chrome extension origins are accepted
- * so the extension preview can talk to the same endpoints a real extension would.
- */
+// Chrome extension origins are allowed so the extension preview hits the same
+// endpoints a real extension would.
 const corsOptions: CorsOptions = {
   origin(origin, callback) {
     if (!origin) return callback(null, true);

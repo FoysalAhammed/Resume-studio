@@ -26,14 +26,8 @@ const jsonBody = express.json({ limit: '2mb' });
 
 const textBodySchema = resumeTextParseRequestSchema;
 
-/**
- * POST /api/resumes/parse
- *
- * Accepts either a raw file body (Content-Type: application/pdf etc., file name in
- * the `x-file-name` header) or JSON `{ text, fileName }` for pasted content.
- * The upload is validated on the server (extension, size, file signature) and is
- * never written to disk or retained after the response.
- */
+// Accepts a raw file body (file name in the x-file-name header) or JSON { text, fileName }
+// for pasted content. Nothing is written to disk or kept after the response.
 resumesRouter.post(
   '/parse',
   rateLimit({ name: 'resume-parse', windowMs: 60_000, max: 20 }),
@@ -85,7 +79,7 @@ resumesRouter.post(
               analysis.skills.push(match);
             }
           }
-          analysis.warnings.push('AI assistance added skills that keyword matching missed. Everything else came from the document itself.');
+          analysis.warnings.push('AI added skills that keyword matching missed. Everything else came from the document.');
         } else {
           ai.reason = result.message;
         }
@@ -98,7 +92,7 @@ resumesRouter.post(
       source: ai.used ? 'ai' : 'local',
       ai,
       retained: false,
-      notice: 'The uploaded file is processed in memory and is not stored by the server.',
+      notice: 'The file is processed in memory and is not stored by the server.',
     });
   }),
 );

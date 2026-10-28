@@ -5,7 +5,6 @@ import { containsTerm, countTerm, normalizeWhitespace } from '../util/text';
 export interface LexiconHit {
   skill: LexiconSkill;
   mentions: number;
-  /** The literal spelling that was found in the text. */
   matchedAs: string;
 }
 
@@ -20,7 +19,6 @@ for (const skill of LEXICON) {
   for (const alias of skill.aliases ?? []) LABEL_INDEX.set(alias.toLowerCase(), skill);
 }
 
-/** Resolve free text such as "react.js" or "postgres" to a lexicon skill. */
 export function resolveSkillLabel(label: string): LexiconSkill | undefined {
   const cleaned = label.trim().toLowerCase().replace(/\s+/g, ' ');
   if (!cleaned) return undefined;
@@ -33,10 +31,7 @@ export function resolveSkillLabel(label: string): LexiconSkill | undefined {
   return undefined;
 }
 
-/**
- * Finds every lexicon skill mentioned in a block of text.
- * A skill is recorded once, with the number of mentions used for emphasis.
- */
+/** Finds every lexicon skill mentioned. Mentions are counted for emphasis. */
 export function findLexiconHits(text: string, options: { minMentions?: number } = {}): LexiconHit[] {
   const haystack = normalizeWhitespace(text);
   if (!haystack) return [];
@@ -62,7 +57,6 @@ export function findLexiconHits(text: string, options: { minMentions?: number } 
     .sort((a, b) => b.mentions - a.mentions || a.skill.name.localeCompare(b.skill.name));
 }
 
-/** Convenience wrapper returning just the skills. */
 export function findLexiconSkills(text: string): LexiconSkill[] {
   return findLexiconHits(text).map((hit) => hit.skill);
 }
@@ -76,11 +70,7 @@ export interface RelatedSkill {
 
 const RELATED_CACHE = new Map<string, RelatedSkill[]>();
 
-/**
- * Related skills come from two sources:
- *  1. curated cross-discipline links in the lexicon (weighted)
- *  2. same-category neighbours at a deliberately low weight
- */
+/** Curated cross-discipline links plus same-category neighbours at a low weight. */
 export function getRelatedSkills(skillId: string): RelatedSkill[] {
   const cached = RELATED_CACHE.get(skillId);
   if (cached) return cached;

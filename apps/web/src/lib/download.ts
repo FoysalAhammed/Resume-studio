@@ -1,4 +1,4 @@
-/** Small helpers for exporting generated text. No file ever leaves the browser. */
+// Helpers for exporting generated text. No file ever leaves the browser.
 
 export function escapeHtml(value: string): string {
   return value
@@ -47,11 +47,8 @@ export async function copyToClipboard(text: string): Promise<boolean> {
   }
 }
 
-/**
- * Opens a print dialog for a plain-text document, which is how "export to PDF"
- * works in this build. A real DOCX export would need a document library; that is
- * listed as future work rather than faked.
- */
+// "Export to PDF" here just opens the browser print dialog. A real DOCX export
+// would need a document library; it is listed as future work.
 export function printTextDocument(title: string, text: string): boolean {
   const win = window.open('', '_blank');
   if (!win) return false;

@@ -13,7 +13,7 @@ export interface ModalProps {
   size?: 'sm' | 'md' | 'lg';
 }
 
-/** Accessible dialog: Escape closes it, focus moves in and returns on close. */
+// Escape closes it; focus moves in on open and back out on close.
 export function Modal({ open, onClose, title, description, children, footer, size = 'md' }: ModalProps) {
   const panelRef = useRef<HTMLDivElement>(null);
   const previouslyFocused = useRef<HTMLElement | null>(null);
@@ -113,7 +113,6 @@ export interface ConfirmDialogProps {
   onCancel: () => void;
 }
 
-/** Used for every destructive or irreversible action in the app. */
 export function ConfirmDialog({
   open,
   title,

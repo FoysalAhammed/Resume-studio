@@ -58,7 +58,6 @@ export default function ResumeAnalyzerPage() {
 
   const busy = status === 'validating' || status === 'uploading' || status === 'analysing';
 
-  /** Raw upload with real byte progress rather than a decorative animation. */
   const uploadFile = (file: File) =>
     new Promise<AnalysisResult>((resolve, reject) => {
       const request = new XMLHttpRequest();
@@ -143,7 +142,7 @@ export default function ResumeAnalyzerPage() {
     if (apiStatus !== 'online') {
       setStatus('error');
       setError(
-        `PDF and DOCX files are parsed by the API server, which is not reachable right now. Start it with "npm run dev" (or "npm run dev:api"), or paste your CV text below — pasted text is analysed entirely in your browser.`,
+        `PDF and DOCX files are parsed by the API server, which is not reachable right now. Start it with "npm run dev" (or "npm run dev:api"), or paste your CV text below. Pasted text is analysed in your browser.`,
       );
       return;
     }
@@ -215,7 +214,7 @@ export default function ResumeAnalyzerPage() {
       });
     } else {
       setStatus('error');
-      setError(`${response.error} Falling back is easy: turn off AI assistance and the same deterministic analyser will run in your browser.`);
+      setError(`${response.error} Turn off AI assistance and the same analyser will run in your browser.`);
     }
   };
 
@@ -231,14 +230,14 @@ export default function ResumeAnalyzerPage() {
       activity: { kind: 'resume-analysed', message: `Applied parsed data from ${result.analysis.fileName}.` },
     });
     setApplied(true);
-    toast.success('Applied to your profile', 'Existing entries were kept; only missing information was added.');
+    toast.success('Applied to your profile', 'Existing entries were kept. Only missing information was added.');
   };
 
   return (
     <div className="space-y-6">
       <PageHeader
         title="Resume Analyzer"
-        description="Upload a CV or paste its text. CareerLens extracts the structure, scores completeness and proposes profile changes for you to approve — nothing is written to your profile until you say so."
+        description="Upload a CV or paste its text. CareerLens pulls out the structure, scores completeness and suggests profile changes for you to approve. Nothing reaches your profile until you say so."
         action={
           <>
             <Badge tone={apiStatus === 'online' ? 'neutral' : 'caution'}>
@@ -277,7 +276,7 @@ export default function ResumeAnalyzerPage() {
             </span>
             <div>
               <p className="text-sm font-semibold text-brand">Drag and drop your CV here</p>
-              <p className="mt-0.5 text-xs text-brand/60">or choose a file — PDF and DOCX are parsed by the API, TXT is parsed in your browser</p>
+              <p className="mt-0.5 text-xs text-brand/60">or choose a file. PDF and DOCX are parsed by the API, TXT in your browser</p>
             </div>
             <input
               ref={inputRef}
@@ -302,7 +301,7 @@ export default function ResumeAnalyzerPage() {
             <p className="text-[11px] text-brand/60">
               {status === 'uploading'
                 ? `${progress}% uploaded. Parsing happens after the upload completes.`
-                : 'Text is being extracted and structured. This is real work, not a decorative animation.'}
+                : 'Text is being extracted and structured.'}
             </p>
           </div>
         ) : null}
@@ -310,7 +309,7 @@ export default function ResumeAnalyzerPage() {
         <div className="mt-5 border-t border-ink-600/60 pt-5">
           <p className="text-xs font-semibold uppercase tracking-wide text-brand/60">Or paste the text</p>
           <p className="mt-1 text-[11px] leading-relaxed text-brand/60">
-            Paste the contents of your CV. This path always works, even with no API server, because the deterministic analyser runs in your browser.
+            Paste the contents of your CV. This always works, even with no API server, because the analyser runs in your browser.
           </p>
           <div className="mt-3">
             <Textarea
@@ -330,7 +329,7 @@ export default function ResumeAnalyzerPage() {
               <div className="w-full sm:w-auto">
                 <Checkbox
                   label="Use the configured AI provider for this parse"
-                  description="The AI may only add skills the keyword pass missed; it never overwrites facts read from the document."
+                  description="The AI can only add skills the keyword pass missed. It never overwrites facts read from the document."
                   checked={useAi}
                   onChange={(event) => setUseAi(event.target.checked)}
                 />
@@ -430,7 +429,7 @@ export default function ResumeAnalyzerPage() {
               <CardHeader
                 title={`Skills detected (${result.analysis.skills.length})`}
                 icon={<Sparkles aria-hidden className="h-4 w-4" />}
-                description="Matched against the curated technology lexicon. Proficiency is not verified — review each skill after applying."
+                description="Matched against the curated technology lexicon. Proficiency is not verified, so review each skill after applying."
                 action={<Badge tone="neutral">{result.patch.fields.length} fields ready to apply</Badge>}
               />
               {result.analysis.skills.length ? (
@@ -449,7 +448,7 @@ export default function ResumeAnalyzerPage() {
               <p className="mt-4 text-[11px] leading-relaxed text-brand/60">
                 Applying will add {pluralise(result.patch.skills.length, 'skill')}, {pluralise(result.patch.experience.length, 'experience entry', 'experience entries')},{' '}
                 {pluralise(result.patch.education.length, 'education entry', 'education entries')} and {pluralise(result.patch.projects.length, 'project')} to your profile. Existing
-                entries with the same name are merged rather than duplicated.
+                entries with the same name are merged instead of duplicated.
               </p>
               <div className="mt-4 flex flex-wrap gap-2">
                 <Button variant="secondary" size="sm" onClick={() => setShowPreview((value) => !value)}>
@@ -477,7 +476,7 @@ export default function ResumeAnalyzerPage() {
               </ul>
             </Card>
             <Card>
-              <CardHeader title={`Missing information (${result.analysis.missingInformation.length})`} description="Things a reviewer would expect but which were not found." />
+              <CardHeader title={`Missing information (${result.analysis.missingInformation.length})`} description="Things a reviewer would expect that were not found." />
               <ul className="mt-3 space-y-2">
                 {result.analysis.missingInformation.map((item) => (
                   <li key={item} className="flex items-start gap-2 text-[11px] leading-relaxed text-brand/75">
@@ -488,7 +487,7 @@ export default function ResumeAnalyzerPage() {
               </ul>
             </Card>
             <Card>
-              <CardHeader title={`Suggestions (${result.analysis.suggestions.length})`} description="Deterministic advice — never a fabricated metric." />
+              <CardHeader title={`Suggestions (${result.analysis.suggestions.length})`} description="Rule-based advice, never a fabricated metric." />
               <ul className="mt-3 space-y-2">
                 {result.analysis.suggestions.map((item) => (
                   <li key={item} className="flex items-start gap-2 text-[11px] leading-relaxed text-brand/75">
@@ -569,7 +568,6 @@ export default function ResumeAnalyzerPage() {
   );
 }
 
-/** Builds the same reviewable patch the API returns, entirely in the browser. */
 function localPatch(analysis: ResumeAnalysis): ProfilePatch {
   return buildProfilePatch(analysis);
 }

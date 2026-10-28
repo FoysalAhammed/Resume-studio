@@ -11,11 +11,8 @@ export interface ParsedUpload {
   warnings: string[];
 }
 
-/**
- * Removes directory components and control characters from a client-supplied
- * file name. Nothing is ever written to disk, but a hostile name must not be
- * able to influence anything downstream either.
- */
+// Strip directories and control characters from the client-supplied name. Nothing
+// is written to disk, but a hostile name still shouldn't reach anything downstream.
 export function sanitizeFileName(raw: string): string {
   const base = (raw ?? '').split(/[\\/]/).pop() ?? '';
   const cleaned = base
@@ -41,11 +38,11 @@ async function extractPdf(buffer: Buffer): Promise<string> {
     const result = await pdfParse(buffer);
     return normalizeWhitespace(result?.text ?? '');
   } catch (error) {
-    // Logged without any document content so the failure can be diagnosed.
+    // Log the parser error, but none of the document content.
     console.warn(`[api] PDF extraction failed: ${(error as Error)?.message ?? 'unknown parser error'}`);
     throw new AppError(
       422,
-      'The PDF could not be read. It may be corrupted, password protected, or an image-only scan without a text layer. This build does not perform OCR - paste the text into the resume box instead.',
+      'The PDF could not be read. It may be corrupted, password protected, or a scan with no text layer. This build has no OCR, so paste the text into the resume box instead.',
       'pdf_unreadable',
     );
   }
@@ -61,10 +58,7 @@ async function extractDocx(buffer: Buffer): Promise<string> {
   }
 }
 
-/**
- * Validates an uploaded resume server-side and converts it to plain text.
- * The signature is inspected because a file name or MIME type cannot be trusted.
- */
+// The file signature is checked because the name and MIME type can't be trusted.
 export async function extractResumeText(buffer: Buffer, fileNameHeader: string): Promise<ParsedUpload> {
   const warnings: string[] = [];
   const fileName = sanitizeFileName(fileNameHeader);
@@ -86,7 +80,7 @@ export async function extractResumeText(buffer: Buffer, fileNameHeader: string):
   if (declaredKind !== 'text' && detected !== declaredKind) {
     throw new AppError(
       415,
-      'The file content does not match its extension, so it was rejected. Rename the file correctly or convert it to PDF/DOCX/TXT.',
+      'The file contents do not match the extension. Rename the file, or convert it to PDF/DOCX/TXT.',
       'signature_mismatch',
     );
   }
@@ -103,7 +97,7 @@ export async function extractResumeText(buffer: Buffer, fileNameHeader: string):
 
   if (text.length < LIMITS.minExtractedCharacters) {
     warnings.push(
-      `Only ${text.length} characters of text were found. If this is a scanned or image-only document the text layer is missing, and this build does not implement OCR.`,
+      `Only ${text.length} characters of text were found. That usually means a scan or image with no text layer, and this build has no OCR.`,
     );
   }
   if (detected === 'pdf') {
@@ -113,7 +107,7 @@ export async function extractResumeText(buffer: Buffer, fileNameHeader: string):
   return { text, kind: detected, fileName, bytes: buffer.length, warnings };
 }
 
-/** Text pasted directly by the user, used by the same analysis pipeline. */
+// Pasted text, run through the same analysis pipeline.
 export function fromPastedText(text: string, fileName: string): ParsedUpload {
   const cleaned = normalizeWhitespace(text);
   if (cleaned.length < 20) {
@@ -124,6 +118,6 @@ export function fromPastedText(text: string, fileName: string): ParsedUpload {
     kind: 'text',
     fileName: sanitizeFileName(fileName || 'pasted-resume.txt'),
     bytes: Buffer.byteLength(cleaned, 'utf8'),
-    warnings: ['Text was provided directly, so no file parsing was performed.'],
+    warnings: ['Text was pasted directly, so no file parsing happened.'],
   };
 }

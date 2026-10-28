@@ -36,7 +36,6 @@ export interface DetectedSection {
   inline: boolean;
 }
 
-/** Locates titled sections in a resume using heading patterns. */
 export function detectSections(lines: string[]): DetectedSection[] {
   const sections: DetectedSection[] = [];
   let current: DetectedSection | null = null;
@@ -294,11 +293,7 @@ export interface ResumeMeta {
   origin?: 'user' | 'sample';
 }
 
-/**
- * Parses extracted resume text into a structured, reviewable analysis.
- * Everything is either marked as found in the document or clearly inferred.
- * Nothing is invented: absent fields stay absent and are reported as missing.
- */
+/** Parses resume text into a reviewable analysis. Nothing is invented: absent fields stay absent and are reported as missing. */
 export function analyseResumeText(rawText: string, meta: ResumeMeta): ResumeAnalysis {
   const text = normalizeWhitespace(rawText).slice(0, LIMITS.maxResumeTextChars);
   const lines = splitLines(text);
@@ -373,7 +368,7 @@ export function analyseResumeText(rawText: string, meta: ResumeMeta): ResumeAnal
   const strengths: string[] = [];
   if (skills.length >= 5) strengths.push(`${skills.length} recognised skills detected, giving the matching engine real evidence to work with.`);
   if (experience.length >= 1) strengths.push(`${experience.length} work experience entr${experience.length === 1 ? 'y' : 'ies'} with dates detected.`);
-  if (projects.length >= 1) strengths.push(`${projects.length} project${projects.length === 1 ? '' : 's'} described, which helps demonstrate skills rather than just listing them.`);
+  if (projects.length >= 1) strengths.push(`${projects.length} project${projects.length === 1 ? '' : 's'} described, so your skills show up in real work.`);
   if (quantified) strengths.push('At least one experience bullet contains a measurable result.');
   if (links.length > 0) strengths.push(`Profile or portfolio links found (${links.length}).`);
   if (sections.length >= 4) strengths.push(`Clear structure: ${sections.map((s) => s.label).join(', ')}.`);
@@ -389,7 +384,7 @@ export function analyseResumeText(rawText: string, meta: ResumeMeta): ResumeAnal
 
   const suggestions: string[] = [];
   if (!quantified && experience.length > 0) {
-    suggestions.push('Add the measurable outcome to at least one bullet (how many users, how much time saved, what improved). Only use numbers you can verify.');
+    suggestions.push('Add the measurable outcome to at least one bullet. Only use numbers you can verify.');
   }
   if (!summaryText && !headlineLine) {
     suggestions.push('Add a two to three line summary at the top stating your focus and the roles you are targeting.');
@@ -398,7 +393,7 @@ export function analyseResumeText(rawText: string, meta: ResumeMeta): ResumeAnal
     suggestions.push('List the specific tools, languages and frameworks you have used. Named technologies are what a keyword filter looks for.');
   }
   if (projects.length === 0) {
-    suggestions.push('Add a projects section with the technologies used - it is the strongest evidence for a student or early-career profile.');
+    suggestions.push('Add a projects section with the technologies used. It is the strongest evidence for a student or early-career profile.');
   }
   if (wordCount > 1200) {
     suggestions.push('The document is long. Aim for one to two pages focused on relevant experience.');
@@ -469,7 +464,6 @@ export interface ProfilePatch {
   certifications: CertificationEntry[];
 }
 
-/** Builds the profile changes a user can review and approve after parsing. */
 export function buildProfilePatch(analysis: ResumeAnalysis): ProfilePatch {
   const now = new Date().toISOString();
   const patch: ProfilePatch = {
@@ -537,7 +531,6 @@ export function buildProfilePatch(analysis: ResumeAnalysis): ProfilePatch {
   return patch;
 }
 
-/** Merges an approved patch into the live profile without dropping existing data. */
 export function mergePatchIntoProfile(profile: CareerProfile, patch: ProfilePatch): CareerProfile {
   const now = new Date().toISOString();
   const existingSkills = new Map(profile.skills.map((skill) => [skill.name.toLowerCase(), skill]));

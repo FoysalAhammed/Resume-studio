@@ -11,7 +11,6 @@ export const studioRouter = Router();
 
 type ImproveBody = z.infer<typeof improveRequestSchema>;
 
-/** POST /api/resume-studio/improve - deterministic rewrite, optionally AI-assisted. */
 studioRouter.post(
   '/improve',
   rateLimit({ name: 'studio', windowMs: 60_000, max: 40 }),
@@ -27,7 +26,7 @@ studioRouter.post(
 
     if (body.useAi) {
       if (!aiAvailable()) {
-        ai.reason = 'No AI provider is configured; deterministic rewrite templates were used instead.';
+        ai.reason = 'No AI provider is configured, so the rewrite templates were used.';
       } else {
         const result = await aiImproveText({
           text: body.text,

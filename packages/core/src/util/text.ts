@@ -1,7 +1,4 @@
-/**
- * Small, dependency-free text utilities shared by extraction, matching,
- * roadmap generation and the diff viewer.
- */
+/** Small text helpers shared across extraction, matching and roadmap generation. */
 
 const STOP_WORDS = new Set([
   'a', 'an', 'and', 'are', 'as', 'at', 'be', 'but', 'by', 'for', 'from', 'has',
@@ -89,10 +86,7 @@ export function keywordOverlap(needle: string, haystack: string): { matched: str
   return { matched, ratio: matched.length / target.size };
 }
 
-/**
- * True when `needle` appears in `haystack` as a whole token sequence.
- * Prevents "Java" matching inside "JavaScript".
- */
+/** Whole-token match, so "Java" does not match inside "JavaScript". */
 export function containsTerm(haystack: string, needle: string): boolean {
   const escaped = escapeRegExp(needle.trim());
   if (!escaped) return false;
@@ -100,7 +94,6 @@ export function containsTerm(haystack: string, needle: string): boolean {
   return pattern.test(haystack);
 }
 
-/** Counts non-overlapping occurrences of a term in a text. */
 export function countTerm(haystack: string, needle: string): number {
   const escaped = escapeRegExp(needle.trim());
   if (!escaped) return 0;
@@ -122,11 +115,7 @@ export function makeId(prefix: string, seed: string): string {
   return `${prefix}_${stableHash(seed)}`;
 }
 
-/**
- * Word level diff based on the longest common subsequence. Whitespace is not a
- * token, so `same + added` always reconstructs the revised text and
- * `same + removed` always reconstructs the original.
- */
+/** Word-level diff (longest common subsequence). Whitespace is not a token, so same+added rebuilds the revised text. */
 export function diffWords(original: string, revised: string): { type: 'same' | 'added' | 'removed'; value: string }[] {
   const a = original.split(/\s+/).filter(Boolean);
   const b = revised.split(/\s+/).filter(Boolean);

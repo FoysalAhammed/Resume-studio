@@ -2,7 +2,7 @@
 
 Base URL in development: `http://localhost:3001`. The web app calls `/api/...` on its own origin,
 which the Vite dev server proxies (so no CORS pre-flight in the browser). `localhost:5173` and
-`localhost:4173` are allowed origins by default; Chrome extension origins are also accepted so the
+`localhost:4173` are allowed origins by default. Chrome extension origins are also accepted, so the
 extension preview can call the same endpoints a real extension would.
 
 All responses are JSON. Errors use a consistent shape:
@@ -48,7 +48,7 @@ logged.
 
 Two content types are accepted.
 
-**Raw file** — send the bytes, name the file in a header. Validated server-side: extension allow-list,
+**Raw file.** Send the bytes and name the file in a header. It is validated server-side: extension allow-list,
 size limit, and a magic-byte check, so a renamed file is rejected with `signature_mismatch`.
 
 ```bash
@@ -59,7 +59,7 @@ curl -X POST http://localhost:3001/api/resumes/parse \
   --data-binary @cv.pdf
 ```
 
-**Pasted text** — analysed by the same pipeline, and also entirely in the browser when the API is
+**Pasted text.** This is analysed by the same pipeline, and also entirely in the browser when the API is
 unreachable, so this path never depends on the server.
 
 ```json
@@ -91,7 +91,7 @@ Response:
 ```
 
 Every extracted field is marked `found` (read from the document) or `inferred` (derived). Missing
-information stays missing and is listed in `missingInformation` — nothing is fabricated.
+information stays missing and is listed in `missingInformation`. Nothing is fabricated.
 
 ---
 
@@ -113,7 +113,7 @@ information stays missing and is listed in `missingInformation` — nothing is f
 
 Returns `{ job, source, ai }`. `job.extraction.method` is `rule-based` or `ai`, and
 `job.extraction.notes` always explains how the list was produced. Requirements are editable in the UI,
-because automatic extraction is a starting point rather than an authority. `useAi: true` without a
+because automatic extraction is a starting point and not an authority. `useAi: true` without a
 configured provider returns the rule-based result plus `ai.used: false` and a reason.
 
 ---
@@ -128,13 +128,13 @@ configured provider returns the rule-based result plus `ai.used: false` and a re
 
 Returns `{ report, gaps, summary, source }`:
 
-- `report.matches[]` — per requirement: `weight`, `matchValue` (0–1), `matchStatus`
+- `report.matches[]`: per requirement, `weight`, `matchValue` (0–1), `matchStatus`
   (`confirmed`/`partial`/`insufficient`/`missing`), the `evidence[]` behind that value and a written
   `explanation`.
-- `report.counts` — totals including required-satisfied out of required-total.
-- `report.disclaimer` — states that the score estimates profile-to-advert overlap and is not a
+- `report.counts`: totals including required-satisfied out of required-total.
+- `report.disclaimer`: states that the score estimates profile-to-advert overlap and is not a
   prediction of being hired.
-- `gaps[]` — prioritised gaps with `whyItMatters`, existing evidence, target proficiency, a practical
+- `gaps[]`: prioritised gaps with `whyItMatters`, existing evidence, target proficiency, a practical
   task, estimated hours and `priorityBasis: "internal-recommendation"`.
 
 ---
@@ -147,7 +147,7 @@ Returns `{ report, gaps, summary, source }`:
 | POST | `/api/cover-letter/generate` | `{ profile, job, motivation, addressGap?, useAi? }` | `{ draft, checklist, source, ai }` |
 
 `suggestion.needsUserInput` is `true` when a rewrite has no measurable result and the writer must ask
-the user for one rather than invent it. Cover-letter drafts insert a bracketed placeholder when the
+the user for one instead of inventing it. Cover-letter drafts insert a bracketed placeholder when the
 motivation is missing.
 
 ---
@@ -160,7 +160,7 @@ motivation is missing.
 | POST | `/api/interviews/evaluate` | `{ question, answer }` | `{ feedback, source, notice }` |
 
 `feedback` is explicitly `label: "heuristic-feedback"` with `coverageScore`, `structureScore` and
-`heuristicScore`. It checks rubric keywords and answer structure; it does not assess correctness and
+`heuristicScore`. It checks rubric keywords and answer structure. It does not assess correctness and
 cannot predict an interview outcome.
 
 ---
@@ -188,7 +188,7 @@ Returns a compact shape for a popup: `score`, `grade`, `counts`, `matched[]`, `p
 
 ## AI provider behaviour
 
-When `AI_API_KEY` is set, these endpoints may use it: `jobs/analyze`, `resumes/parse`,
+When `AI_API_KEY` is set, these endpoints can use it: `jobs/analyze`, `resumes/parse`,
 `resume-studio/improve`, `cover-letter/generate`, `interviews/generate`. Each one:
 
 1. runs the deterministic path first;

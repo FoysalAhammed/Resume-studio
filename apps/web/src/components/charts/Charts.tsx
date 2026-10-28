@@ -34,7 +34,7 @@ const TONE_COLOURS: Record<string, string> = {
   danger: '#f87171',
 };
 
-/** An SVG donut - always shows a value that was actually computed. */
+// SVG donut. Only ever shows a value that was actually computed.
 export function ScoreRing({ score, grade, size = 132 }: { score: number; grade?: string; size?: number }) {
   const radius = 46;
   const circumference = 2 * Math.PI * radius;
@@ -68,7 +68,7 @@ export function ScoreRing({ score, grade, size = 132 }: { score: number; grade?:
           <p className="text-xs font-bold uppercase tracking-wider text-brand/55">Verdict</p>
           <p className="text-lg font-extrabold text-brand">{grade}</p>
           <p className="mt-1 max-w-[14rem] text-[11px] leading-relaxed text-brand/60">
-            An estimate of profile-to-advert overlap, not the probability of being hired.
+            An estimate of how well your profile overlaps the advert. It does not predict whether you get hired.
           </p>
         </div>
       ) : null}
@@ -76,7 +76,6 @@ export function ScoreRing({ score, grade, size = 132 }: { score: number; grade?:
   );
 }
 
-/** Requirement outcomes as a stacked bar - every segment comes from the report. */
 export function MatchBreakdownChart({ report }: { report: MatchReport }) {
   const data = useMemo(
     () => [
@@ -124,7 +123,6 @@ function counts(statuses: string[]): { confirmed: number; partial: number; missi
   };
 }
 
-/** Skill distribution by category, from the stored profile. */
 export function SkillCoverageChart({ skills }: { skills: Skill[] }) {
   const data = useMemo(() => {
     const byCategory = new Map<string, number>();
@@ -158,7 +156,6 @@ export function SkillCoverageChart({ skills }: { skills: Skill[] }) {
   );
 }
 
-/** Roadmap completion by phase, computed from real task states. */
 export function RoadmapProgressChart({ roadmap }: { roadmap: LearningRoadmap }) {
   const data = useMemo(() => {
     const phases = ['Foundation', 'Practice', 'Portfolio', 'Applications'] as const;
@@ -202,7 +199,6 @@ export function RoadmapProgressChart({ roadmap }: { roadmap: LearningRoadmap }) 
   );
 }
 
-/** Compact radial gauge used on the dashboard for profile completeness. */
 export function CompletenessGauge({ value, label }: { value: number; label: string }) {
   const data = [{ name: label, value: Math.max(0, Math.min(100, value)), fill: TONE_COLOURS[scoreTone(value)] }];
   return (

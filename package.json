@@ -2,7 +2,7 @@
   "name": "careerlens-ai",
   "version": "1.0.0",
   "private": true,
-  "description": "CareerLens AI - AI-assisted career readiness, resume intelligence, job matching and skill-gap platform",
+  "description": "CareerLens AI - CV analysis, job matching, skill-gap planning and resume writing help",
   "workspaces": [
     "packages/*",
     "apps/*"

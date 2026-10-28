@@ -75,7 +75,7 @@ export default function OverviewPage() {
       },
       {
         label: 'Build a learning roadmap',
-        detail: 'Turn the highest-priority gaps into a scheduled, trackable plan.',
+        detail: 'Turn your top gaps into a plan you can track.',
         to: '/roadmap',
         done: workspace.roadmaps.length > 0,
       },
@@ -93,15 +93,15 @@ export default function OverviewPage() {
     return (
       <div className="space-y-6">
         <PageHeader
-          title="Understand your skills. Discover your opportunities. Build a path toward your career."
-          description="CareerLens AI reads your CV, models your skills as structured evidence, extracts requirements from job adverts and explains every compatibility score it produces."
+          title="Understand your skills and what to do next."
+          description="CareerLens AI reads your CV, pulls requirements out of job adverts, and explains every compatibility score it gives you."
         />
         <Card className="p-0">
           <div className="p-6">
             <EmptyState
               icon={<Sparkles aria-hidden className="h-8 w-8" />}
               title="This workspace is empty"
-              description="Start with your own CV and profile, or load the clearly labelled demonstration workspace (a fictional candidate) to explore every feature immediately. No API key is required for either path."
+              description="Start with your own CV and profile, or load the demonstration workspace (a fictional candidate) to explore the app. No API key needed either way."
               action={
                 <>
                   <Button onClick={loadSample} icon={<Sparkles aria-hidden className="h-4 w-4" />}>
@@ -118,10 +118,10 @@ export default function OverviewPage() {
             />
           </div>
           <div className="grid gap-4 border-t border-ink-600/60 p-6 sm:grid-cols-2 lg:grid-cols-4">
-            <StatTile label="Resume analysis" value="Real parsing" hint="PDF, DOCX and text are parsed server-side; the file is never stored." icon={<Wrench aria-hidden className="h-4 w-4" />} />
+            <StatTile label="Resume analysis" value="Real parsing" hint="PDF, DOCX and text are parsed server-side. The file is never stored." icon={<Wrench aria-hidden className="h-4 w-4" />} />
             <StatTile label="Matching" value="Explainable" hint="Weighted requirement scoring with per-requirement reasoning." tone="brand" icon={<Target aria-hidden className="h-4 w-4" />} />
             <StatTile label="Roadmaps" value="Deterministic" hint="Plans are generated from your gaps and weekly availability." icon={<RouteIcon aria-hidden className="h-4 w-4" />} />
-            <StatTile label="AI provider" value="Optional" hint="Every feature works without one; AI results are labelled." tone="caution" icon={<Sparkles aria-hidden className="h-4 w-4" />} />
+            <StatTile label="AI provider" value="Optional" hint="Every feature works without one. AI results are labelled." tone="caution" icon={<Sparkles aria-hidden className="h-4 w-4" />} />
           </div>
         </Card>
       </div>
@@ -132,7 +132,7 @@ export default function OverviewPage() {
     <div className="space-y-6">
       <PageHeader
         title={profile.displayName ? `Welcome back, ${profile.displayName.split(' ')[0]}` : 'Career overview'}
-        description="Everything below is derived from the data in this workspace. Scores come from the deterministic matching engine, so they change only when your profile or an advert changes."
+        description="Everything below comes from the data in this workspace. Scores come from the matching engine, so they only change when your profile or an advert changes."
         action={
           <>
             <Badge tone={completeness.score >= 80 ? 'success' : 'brand'}>Profile {completeness.score}% complete</Badge>
@@ -166,7 +166,7 @@ export default function OverviewPage() {
             <CardHeader
               title="Recommended next actions"
               icon={<ListChecks aria-hidden className="h-4 w-4" />}
-              description="Ordered by what unblocks the most value. Each item links to the page that completes it."
+              description="Sorted so the most useful step comes first. Each item links to the page that does it."
             />
             <ul className="mt-4 space-y-2.5">
               {actions.map((action) => (

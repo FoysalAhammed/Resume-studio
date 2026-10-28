@@ -16,13 +16,8 @@ export const extensionRouter = Router();
 
 type ExtensionBody = z.infer<typeof extensionAnalyzeRequestSchema>;
 
-/**
- * POST /api/extension/analyze
- *
- * The contract a browser extension popup would use. It deliberately accepts only
- * a small skill subset rather than a full profile, so the endpoint cannot be used
- * to exfiltrate a complete workspace.
- */
+// A browser extension popup calls this. It takes a small skill subset, not a full
+// profile, so the endpoint can't be used to pull a whole workspace.
 extensionRouter.post(
   '/analyze',
   rateLimit({ name: 'extension', windowMs: 60_000, max: 60 }),

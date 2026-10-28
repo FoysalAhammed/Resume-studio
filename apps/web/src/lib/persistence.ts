@@ -1,15 +1,10 @@
 import type { Workspace } from '@careerlens/core';
 
 /**
- * Browser persistence for the local-demo workspace.
- *
- * IndexedDB is used because the workspace is structured data that can grow
- * (parsed CVs, roadmaps, drafts). This is browser-only storage on one device:
- * it is NOT secure production storage, it is not encrypted, and it is not a
- * substitute for the PostgreSQL path described in docs/DATABASE.md.
- *
- * No secret ever belongs here - there are no passwords, tokens or API keys to
- * store, because the application has no credentials of its own.
+ * Workspace persistence for the browser demo. IndexedDB holds structured data
+ * that can grow (parsed CVs, roadmaps, drafts). Browser-only, unencrypted, one
+ * device: not a substitute for the PostgreSQL path in docs/DATABASE.md.
+ * Nothing secret belongs here; the app has no credentials of its own.
  */
 
 const DB_NAME = 'careerlens';

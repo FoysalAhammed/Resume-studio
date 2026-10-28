@@ -9,11 +9,6 @@ export const matchesRouter = Router();
 
 type MatchBody = z.infer<typeof matchRequestSchema>;
 
-/**
- * POST /api/matches/analyze
- * Runs the same deterministic engine that the web client uses, and returns the
- * report plus the derived skill-gap list.
- */
 matchesRouter.post(
   '/analyze',
   rateLimit({ name: 'match', windowMs: 60_000, max: 60 }),

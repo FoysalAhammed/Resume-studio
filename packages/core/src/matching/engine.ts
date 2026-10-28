@@ -12,7 +12,7 @@ import { EVIDENCE_SOURCE_LABELS, MATCH_CONFIG, MATCH_DISCLAIMER, PROFICIENCY_ORD
 import { getRelatedSkills, resolveSkillLabel } from '../skills/graph';
 import { containsTerm, makeId, roundTo, uniqueBy } from '../util/text';
 
-/** A skill the candidate can be credited for, resolved against the lexicon. */
+/** A skill the candidate gets credit for, resolved against the lexicon. */
 interface CandidateSkill {
   label: string;
   lexiconId?: string;
@@ -92,8 +92,7 @@ interface Assessment {
 }
 
 /**
- * Core evidence-mapping rule. Returns the strongest single piece of evidence and
- * the full evidence list; multiple independent sources add a small bounded bonus.
+ * Scores one requirement. Several independent sources add a small capped bonus.
  */
 export function assessRequirement(
   requirement: JobRequirement,
@@ -111,7 +110,7 @@ export function assessRequirement(
     best = Math.max(best, value);
     evidence.push({
       source: direct.evidence[0]?.source ?? 'self-reported',
-      detail: `Direct match: ${direct.label} in your profile (${direct.proficiency})${meetsTarget ? '' : ` — below the ${targetProficiency} target for this advert`}`,
+      detail: `Direct match: ${direct.label} in your profile (${direct.proficiency})${meetsTarget ? '' : `, below the ${targetProficiency} target for this advert`}`,
     });
   } else {
     missing.push('No matching skill recorded in your profile');
@@ -159,7 +158,7 @@ export function assessRequirement(
 
     if (best === 0) {
       const relatedNames = targetSkillId ? getRelatedSkills(targetSkillId).slice(0, 2).map((r) => r.skill.name) : [];
-      if (relatedNames.length) missing.push(`No evidence found; related ground you already have: ${relatedNames.join(', ')}`);
+      if (relatedNames.length) missing.push(`No evidence found. Related ground you already have: ${relatedNames.join(', ')}`);
     }
   }
 
@@ -211,7 +210,7 @@ function buildNextSteps(report: Omit<MatchReport, 'nextSteps' | 'disclaimer' | '
     steps.push(`${report.counts.requiredSatisfied} of ${report.counts.requiredTotal} required criteria are currently satisfied.`);
   }
   if (report.score >= 70) {
-    steps.push('Your recorded profile covers most of this advert — tailor your CV wording to the requirements below and apply.');
+    steps.push('Your recorded profile covers most of this advert. Tailor your CV wording to the requirements below, then apply.');
   }
   if (job.extraction.method === 'rule-based') {
     steps.push('Requirements were extracted automatically with keyword rules. Review the list and correct it if a tool was missed.');
@@ -225,11 +224,11 @@ function buildNextSteps(report: Omit<MatchReport, 'nextSteps' | 'disclaimer' | '
 export interface MatchInput {
   profile: CareerProfile;
   job: JobDescription;
-  /** Optional override for requirement weights (e.g. user emphasis). */
+  /** Optional target proficiency override, keyed by requirement status. */
   targetProficiencyOverride?: Partial<Record<'required' | 'preferred', Proficiency>>;
 }
 
-/** Deterministic, explainable weighted requirement matching. */
+/** Weighted matching. Same inputs always give the same report. */
 export function computeMatch(input: MatchInput): MatchReport {
   const { profile, job } = input;
   const index = buildEvidenceIndex(profile);
@@ -290,7 +289,6 @@ export function computeMatch(input: MatchInput): MatchReport {
   };
 }
 
-/** Re-runs the engine and reports whether anything moved. */
 export function matchHasChanged(previous: MatchReport | undefined, next: MatchReport): boolean {
   if (!previous) return true;
   if (previous.matches.length !== next.matches.length) return true;

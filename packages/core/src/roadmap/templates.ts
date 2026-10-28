@@ -45,7 +45,7 @@ export function foundationTask(label: string, category: SkillCategory | undefine
 export function practiceTask(label: string, category: SkillCategory | undefined): TaskBlueprint {
   return {
     title: `${label} practice exercise`,
-    description: `Produce one concrete artefact that uses ${label}, so you can talk about it with real detail rather than listing a keyword.`,
+    description: `Produce one concrete artefact that uses ${label}, so you have something real to talk about instead of a keyword.`,
     exercise: exerciseFor(label, category),
     completionCriteria: `You have an artefact that uses ${label} and can describe one trade-off you considered.`,
   };
@@ -54,7 +54,7 @@ export function practiceTask(label: string, category: SkillCategory | undefined)
 export function portfolioTask(label: string): TaskBlueprint {
   return {
     title: `Add ${label} to a portfolio project`,
-    description: `Extend an existing project so ${label} becomes defensible evidence in your profile, not just a claim.`,
+    description: `Extend an existing project so ${label} becomes real evidence in your profile.`,
     exercise: `Add one feature that genuinely needs ${label}, commit it, and rewrite the matching CV bullet to describe what you built.`,
     completionCriteria: `A repository or demo link exists and your profile records ${label} with project evidence attached.`,
   };
@@ -70,7 +70,7 @@ export function applicationsTasks(role: string): TaskBlueprint[] {
     },
     {
       title: 'Apply to five roles and track the responses',
-      description: 'Applications are a numbers game with feedback loops; track what you send so you can improve it.',
+      description: 'Track every application you send so you can learn from the responses.',
       exercise: 'Apply to five relevant roles, record the date and channel, and note any rejection reason you receive.',
       completionCriteria: 'Five applications sent and logged.',
     },

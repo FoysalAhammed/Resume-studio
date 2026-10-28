@@ -67,7 +67,7 @@ export default function RoadmapPage() {
           ? `Started the task “${task.title}”.`
           : `Reopened the task “${task.title}”.`,
     );
-    if (status === 'completed') toast.success('Task completed', 'Roadmap progress updated from the actual task state.');
+    if (status === 'completed') toast.success('Task completed', 'Progress updated from the task state.');
   };
 
   const recalculate = (jobIdOverride?: string) => {
@@ -75,7 +75,7 @@ export default function RoadmapPage() {
     const job = workspace.jobs.find((item) => item.id === (jobIdOverride ?? roadmap.jobId));
     const report = job ? workspace.matches.find((match) => match.jobId === job.id) : undefined;
     if (!job || !report) {
-      toast.error('No advert available', 'Rework the target role by analysing an advert first.');
+      toast.error('No advert available', 'Analyse an advert first to set a target role.');
       return;
     }
     const generated = generateRoadmap({
@@ -95,12 +95,12 @@ export default function RoadmapPage() {
       <div className="space-y-6">
         <PageHeader
           title="Learning Roadmap"
-          description="Roadmaps are generated from the gaps of a specific advert, so the plan always targets a real role rather than a generic checklist."
+          description="Roadmaps are built from the gaps of one advert, so the plan targets a real role instead of a generic checklist."
         />
         <EmptyState
           icon={<RouteIcon aria-hidden className="h-8 w-8" />}
           title="No roadmap yet"
-          description="Analyse an advert, review the skill gaps, then generate a roadmap from the gaps page. Tasks arrive in four phases: Foundation, Practice, Portfolio and Applications."
+          description="Analyse an advert, review the skill gaps, then generate a roadmap from the gaps page. Tasks come in four phases: Foundation, Practice, Portfolio and Applications."
           action={
             <Link to="/jobs" className="rounded-xl bg-brand px-4 py-2.5 text-xs font-bold text-ink transition-colors hover:bg-brand-hover">
               Analyse an advert
@@ -109,7 +109,7 @@ export default function RoadmapPage() {
         />
         {workspace.jobs.length ? (
           <Card>
-            <CardHeader title="Generate immediately" description="Create a plan from the most recent advert and profile." />
+            <CardHeader title="Generate now" description="Create a plan from the latest advert and your profile." />
             <div className="mt-4">
               <Button
                 onClick={() => navigate('/gaps')}
@@ -160,7 +160,7 @@ export default function RoadmapPage() {
       <div className="grid gap-6 lg:grid-cols-12">
         <div className="space-y-6 lg:col-span-4">
           <Card>
-            <CardHeader title="Progress" description="Computed from task states, never estimated separately." />
+            <CardHeader title="Progress" description="Computed from task states, not estimated separately." />
             <div className="mt-4 space-y-3">
               <Progress value={progress?.percentComplete ?? 0} tone={(progress?.percentComplete ?? 0) > 60 ? 'success' : 'brand'} label="Roadmap progress" />
               <p className="text-2xl font-extrabold text-brand">{progress?.percentComplete ?? 0}%</p>
@@ -182,20 +182,20 @@ export default function RoadmapPage() {
                 {roadmap.weeklyHours}h per week.
               </p>
               <p className="text-[10px] leading-relaxed text-brand/45">
-                Completing this plan is not a guarantee of employment. It is a structured way to close the gaps this advert identified.
+                Finishing this plan is not a guarantee of a job. It is one way to close the gaps this advert found.
               </p>
             </div>
           </Card>
 
           <Card>
-            <CardHeader title="Phase progress" description="Where the work sits across the plan." />
+            <CardHeader title="Phase progress" description="How the work is spread across the plan." />
             <div className="mt-3">
               <RoadmapProgressChart roadmap={roadmap} />
             </div>
           </Card>
 
           <Card>
-            <CardHeader title="How this plan was produced" description={`Generated ${formatDateTime(roadmap.createdAt)}`} />
+            <CardHeader title="How this plan was built" description={`Generated ${formatDateTime(roadmap.createdAt)}`} />
             <ul className="mt-3 space-y-2">
               {roadmap.generation.notes.map((note, index) => (
                 <li key={index} className="text-[11px] leading-relaxed text-brand/70">
@@ -220,7 +220,7 @@ export default function RoadmapPage() {
             <CardHeader
               title="Tasks"
               icon={<RouteIcon aria-hidden className="h-4 w-4" />}
-              description="Mark tasks complete or reopen them at any time. Progress updates immediately."
+              description="Mark tasks complete or reopen them whenever you like. Progress updates straight away."
               action={
                 <Button size="sm" variant="secondary" onClick={() => setAdding(true)} icon={<Plus aria-hidden className="h-3.5 w-3.5" />}>
                   Add custom task
@@ -306,7 +306,7 @@ export default function RoadmapPage() {
         open={adding}
         onClose={() => setAdding(false)}
         title="Add a custom task"
-        description="Anything the generated plan missed: a course, a specific project, a piece of interview practice."
+        description="Anything the plan missed: a course, a project, some interview practice."
         footer={
           <>
             <Button variant="secondary" onClick={() => setAdding(false)}>
@@ -406,7 +406,7 @@ export default function RoadmapPage() {
                 onChange={(event) => setEditing({ ...editing, estimatedHours: Number(event.target.value) })}
               />
             </Field>
-            <Field label="Your notes" hint="Kept with the task so you can record what you actually did.">
+            <Field label="Your notes" hint="Stored with the task, so you can note down what you actually did.">
               <Textarea rows={2} value={editing.notes ?? ''} onChange={(event) => setEditing({ ...editing, notes: event.target.value })} />
             </Field>
           </div>
@@ -416,7 +416,7 @@ export default function RoadmapPage() {
       <ConfirmDialog
         open={confirmReset}
         title="Reset this roadmap?"
-        message="Every task, including completed ones and their notes, will be removed and a fresh plan generated from the current gaps. Your profile and adverts are not affected."
+        message="Every task goes, including completed ones and their notes, and a fresh plan is built from the current gaps. Your profile and adverts are untouched."
         confirmLabel="Reset plan"
         onCancel={() => setConfirmReset(false)}
         onConfirm={() => {
@@ -443,7 +443,7 @@ export default function RoadmapPage() {
   );
 }
 
-/** Recomputes the gaps for a job from the stored report, keeping the page honest. */
+/** Recomputes gaps from the stored report instead of keeping a second copy of them. */
 function gapsForJob(workspace: Workspace, jobId: string) {
   const job = workspace.jobs.find((item) => item.id === jobId);
   const report = workspace.matches.find((match) => match.jobId === jobId);

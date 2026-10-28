@@ -1,12 +1,9 @@
 import type { ApiHealth, ImprovementSuggestion, InterviewFeedback, InterviewQuestion, JobDescription, MatchReport, ResumeAnalysis, SkillGap, DraftDocument, ProfilePatch } from '@careerlens/core';
 
 /**
- * Thin client for the CareerLens API.
- *
- * Every call returns a discriminated result instead of throwing, because the
- * whole local workflow must keep working when the API server is not running.
- * All requests are same-origin ('/api/...'), which the Vite dev server proxies
- * to the Express server, so no credentials ever need to live in the browser.
+ * Client for the CareerLens API. Calls return a result object instead of
+ * throwing, so the app keeps working when the server is down. Requests go to
+ * same-origin /api/..., proxied by Vite, so no credentials sit in the browser.
  */
 
 const BASE = (import.meta.env.VITE_API_BASE_URL as string | undefined)?.replace(/\/+$/, '') ?? '';
@@ -53,7 +50,7 @@ export const api = {
       note: string;
     }>('/api/meta/match-config', { method: 'GET' }, 8000),
 
-  /** Uploads the raw file body; the file name travels in a header. */
+  // Uploads the raw file body; the file name goes in a header.
   parseResumeFile: (file: File, useAi: boolean) =>
     request<ResumeApiPayload>(
       '/api/resumes/parse',
@@ -131,7 +128,7 @@ export const api = {
       30000,
     ),
 
-  /** Used by the extension preview: only a skill subset leaves the page. */
+  // Extension preview only: just a skill subset leaves the page.
   extensionAnalyze: (payload: {
     jobText: string;
     jobTitle?: string;

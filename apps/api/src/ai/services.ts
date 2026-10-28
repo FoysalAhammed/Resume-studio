@@ -11,18 +11,14 @@ import {
 } from '@careerlens/core';
 import { asDocument, callAi, parseJsonResponse } from './provider';
 
-/**
- * One function per AI-assisted capability. Each returns a value rather than
- * throwing, and validates the model output with a Zod contract before anything
- * downstream is allowed to use it.
- */
+// One function per AI capability. Output is validated against a Zod contract before callers see it.
 
 export type ServiceResult<T> = { ok: true; value: T; model: string } | { ok: false; reason: string; message: string };
 
 function validateWith<T>(schema: { safeParse: (input: unknown) => { success: boolean; data?: T; error?: unknown } }, raw: unknown, label: string, model: string): ServiceResult<T> {
   const parsed = schema.safeParse(raw);
   if (!parsed.success || parsed.data === undefined) {
-    return { ok: false, reason: 'validation-failed', message: `${label} returned data that did not match the expected structure, so the local result was kept instead.` };
+    return { ok: false, reason: 'validation-failed', message: `${label} returned unexpected data, so the local result was kept.` };
   }
   return { ok: true, value: parsed.data, model };
 }
@@ -30,7 +26,7 @@ function validateWith<T>(schema: { safeParse: (input: unknown) => { success: boo
 export interface RequirementPromptInput {
   jobText: string;
   title?: string;
-  /** Skill names already recognised locally, so the model can focus on the rest. */
+  // Skills already found locally, so the model can concentrate on the rest.
   knownSkills: string[];
 }
 

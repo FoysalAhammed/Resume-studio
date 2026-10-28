@@ -168,7 +168,6 @@ export function emptyWorkspace(): Workspace {
   };
 }
 
-/** Adds project-backed evidence to skills that genuinely appear in a project stack. */
 function attachProjectEvidence(profile: CareerProfile): CareerProfile {
   return {
     ...profile,
@@ -198,7 +197,6 @@ export interface SampleWorkspaceResult {
   roadmap: LearningRoadmap;
 }
 
-/** Builds the labelled demonstration workspace from fictional data. */
 export function buildSampleWorkspace(): SampleWorkspaceResult {
   const analysis = analyseResumeText(SAMPLE_RESUME_TEXT, {
     fileName: 'ayesha-rahman-sample-cv.txt',
@@ -305,7 +303,7 @@ export function createSampleWorkspace(): Workspace {
   return buildSampleWorkspace().workspace;
 }
 
-/** All sample job texts, exposed so the UI can offer them as one click examples. */
+/** All sample job texts, exposed so the UI can offer them as one-click examples. */
 export const SAMPLE_JOBS: { label: string; description: string }[] = [
   { label: 'Junior Frontend Engineer', description: SAMPLE_JOB_ONE },
   { label: 'Full Stack Developer', description: SAMPLE_JOB_TWO },

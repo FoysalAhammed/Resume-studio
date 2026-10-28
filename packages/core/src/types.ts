@@ -1,9 +1,7 @@
 /**
  * CareerLens AI - shared domain types.
  *
- * This module is the single source of truth for the data that flows through the
- * whole platform (web app, API and tests). It is intentionally free of any
- * framework or runtime dependency so it can be unit tested in isolation.
+ * Framework-free on purpose, so they can be unit tested on their own.
  */
 
 export const SCHEMA_VERSION = 1;
@@ -40,7 +38,7 @@ export type EvidenceSource =
 export interface SkillEvidence {
   source: EvidenceSource;
   detail: string;
-  /** Optional link proving the evidence (repository, certificate, assessment). */
+  /** Link or certificate that backs this up. */
   link?: string;
 }
 
@@ -48,12 +46,12 @@ export interface Skill {
   id: string;
   name: string;
   category: SkillCategory;
-  /** Canonical lexicon id when the skill was recognised, otherwise undefined. */
+  /** Canonical lexicon id when the skill was recognised. */
   lexiconId?: string;
   proficiency: Proficiency;
   yearsExperience?: number;
   evidence: SkillEvidence[];
-  /** Where the entry came from. Sample data is always labelled. */
+  /** Sample data is always labelled. */
   origin: 'user' | 'sample';
   updatedAt: string;
 }
@@ -134,24 +132,19 @@ export interface StoredProfile extends CareerProfile {
   origin: 'user' | 'sample';
 }
 
-/* ------------------------------------------------------------------ jobs -- */
-
 export type RequirementStatus = 'required' | 'preferred';
 
 export interface JobRequirement {
   id: string;
-  /** Canonical lexicon id when recognised locally. */
   skillId?: string;
   label: string;
   category?: SkillCategory;
   status: RequirementStatus;
-  /** Base importance, configurable through MATCH_WEIGHTS. */
   weight: number;
-  /** Extra emphasis multiplier derived from the wording of the advert (1 to 1.3). */
+  /** 1 to 1.3, set from the wording of the advert. */
   emphasis: number;
-  /** Rough hours needed to become productive with this skill from scratch. */
+  /** Rough hours to reach a productive level from scratch. */
   learnHours?: number;
-  /** true when the user manually added or corrected the requirement. */
   editedByUser?: boolean;
 }
 
@@ -176,8 +169,6 @@ export interface JobDescription {
   createdAt: string;
   updatedAt: string;
 }
-
-/* --------------------------------------------------------------- matching -- */
 
 export type MatchStatus = 'confirmed' | 'partial' | 'insufficient' | 'missing';
 
@@ -221,8 +212,6 @@ export interface MatchReport {
   createdAt: string;
 }
 
-/* ------------------------------------------------------------------ gaps -- */
-
 export interface SkillGap {
   id: string;
   requirementId: string;
@@ -242,8 +231,6 @@ export interface SkillGap {
   priorityBasis: 'internal-recommendation';
   resources: { label: string; url: string }[];
 }
-
-/* -------------------------------------------------------------- roadmap --- */
 
 export type TaskStatus = 'not-started' | 'in-progress' | 'completed';
 export type RoadmapPhase = 'Foundation' | 'Practice' | 'Portfolio' | 'Applications';
@@ -289,22 +276,18 @@ export interface RoadmapProgress {
   completed: number;
   inProgress: number;
   notStarted: number;
-  /** Percentage of tasks actually completed. */
   percentComplete: number;
   completedHours: number;
   totalHours: number;
-  /** Estimated weeks left at the configured weekly availability. */
   estimatedWeeksRemaining: number;
 }
-
-/* ------------------------------------------------------- resume analysis -- */
 
 export type ExtractionConfidence = 'found' | 'inferred';
 
 export interface ExtractedField<T> {
   value: T;
   confidence: ExtractionConfidence;
-  /** Line or snippet the value came from (never invented). */
+  /** The line it came from. Never invented. */
   source?: string;
 }
 
@@ -348,15 +331,13 @@ export interface ResumeAnalysis {
   origin: 'user' | 'sample';
 }
 
-/* ---------------------------------------------------------- resume studio -- */
-
 export interface ImprovementSuggestion {
   id: string;
   original: string;
   revised: string;
   kind: 'summary' | 'experience' | 'project';
   rationale: string;
-  /** True when the writer cannot improve the text without more information. */
+  /** True when the text cannot be improved without more information from the user. */
   needsUserInput: boolean;
   promptFor?: string;
 }
@@ -376,8 +357,6 @@ export interface DraftDocument {
   reviewed: boolean;
   createdAt: string;
 }
-
-/* ------------------------------------------------------------- interview -- */
 
 export type InterviewQuestionType = 'technical' | 'practical' | 'project' | 'behavioural';
 
@@ -413,8 +392,6 @@ export interface InterviewSession {
   createdAt: string;
 }
 
-/* -------------------------------------------------------------- activity -- */
-
 export type ActivityKind =
   | 'profile-updated'
   | 'resume-analysed'
@@ -433,11 +410,9 @@ export interface ActivityEvent {
   at: string;
 }
 
-/* ------------------------------------------------------------- workspace -- */
-
 export interface Workspace {
   schemaVersion: number;
-  /** 'sample' means the workspace is the clearly-labelled demo dataset. */
+  /** 'sample' means the clearly-labelled demo dataset. */
   origin: 'user' | 'sample';
   profile: StoredProfile;
   jobs: JobDescription[];
@@ -447,7 +422,7 @@ export interface Workspace {
   drafts: DraftDocument[];
   interviewSessions: InterviewSession[];
   activity: ActivityEvent[];
-  /** App-level preferences (never secrets). */
+  /** App-level preferences, never secrets. */
   settings: {
     reducedMotion: boolean;
     defaultHorizonWeeks: number;

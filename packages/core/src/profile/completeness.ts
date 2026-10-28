@@ -16,8 +16,8 @@ export interface ProfileCompleteness {
 }
 
 /**
- * Profile completeness is a plain checklist over data the user actually
- * entered - it is not an employability score and is never presented as one.
+ * A plain checklist over the data the user entered.
+ * It is not an employability score and is never shown as one.
  */
 export function profileCompleteness(profile: CareerProfile): ProfileCompleteness {
   const checks: CompletenessCheck[] = [

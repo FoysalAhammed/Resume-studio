@@ -18,11 +18,8 @@ export const jobsRouter = Router();
 
 type AnalyzeBody = z.infer<typeof jobAnalyzeRequestSchema>;
 
-/**
- * Merges AI-extracted requirements into the rule-based ones.
- * The user's advert text remains the source of truth: AI can add or recategorise
- * criteria but never introduces a technology that is not in the text.
- */
+// Merges AI requirements into the rule-based ones. The advert text stays the source
+// of truth: AI can add or recategorise criteria, but never invent a technology.
 function mergeAiRequirements(local: JobRequirement[], aiLabels: { label: string; status: 'required' | 'preferred'; learnHours?: number }[]): JobRequirement[] {
   const byKey = new Map<string, JobRequirement>();
   for (const requirement of local) {
@@ -59,7 +56,6 @@ function mergeAiRequirements(local: JobRequirement[], aiLabels: { label: string;
     .slice(0, 60);
 }
 
-/** POST /api/jobs/analyze - extract structured requirements from advert text. */
 jobsRouter.post(
   '/analyze',
   rateLimit({ name: 'job-analyze', windowMs: 60_000, max: 40 }),
@@ -79,7 +75,7 @@ jobsRouter.post(
 
     if (body.useAi) {
       if (!aiAvailable()) {
-        ai.reason = 'No AI provider is configured; the deterministic rule-based extraction was used instead.';
+        ai.reason = 'No AI provider is configured, so the rule-based extraction was used.';
       } else {
         const result = await aiRefineRequirements({
           jobText: job.rawText.slice(0, 12000),
@@ -94,8 +90,8 @@ jobsRouter.post(
           job.extraction = {
             method: 'ai',
             notes: [
-              `AI-assisted extraction reviewed the advert and produced ${result.value.requirements.length} criteria (${before} were already found by keyword matching).`,
-              'The original advert text is unchanged and remains the source of truth - edit the requirement list if anything looks wrong.',
+              `AI-assisted extraction produced ${result.value.requirements.length} criteria (${before} were already found by keyword matching).`,
+              'The advert text is unchanged and stays the source of truth. Edit the list if anything looks wrong.',
             ],
             extractedAt: new Date().toISOString(),
           };

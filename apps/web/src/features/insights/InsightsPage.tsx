@@ -37,7 +37,7 @@ export default function InsightsPage() {
     <div className="space-y-6">
       <PageHeader
         title="Career Insights"
-        description="Charts and figures built only from data in this workspace. Where there is not enough data, the panel says so instead of drawing a decorative placeholder."
+        description="Charts drawn only from data in this workspace. Where there isn't enough, the panel says so instead of showing a fake placeholder."
         action={<Badge tone={workspace.origin === 'sample' ? 'caution' : 'neutral'}>{workspace.origin === 'sample' ? 'Demonstration data' : 'Your data'}</Badge>}
       />
 
@@ -46,7 +46,7 @@ export default function InsightsPage() {
           <EmptyState
             icon={<BarChart3 aria-hidden className="h-8 w-8" />}
             title="Not enough data to chart yet"
-            description="Add skills, analyse an advert or load the demonstration workspace, and this page fills with real figures: profile completeness, requirement outcomes, skill coverage and roadmap progress."
+            description="Add skills or analyse an advert and this page fills with real figures: profile completeness, requirement outcomes, skill coverage and roadmap progress."
             action={
               <Link to="/jobs" className="rounded-xl bg-brand px-4 py-2.5 text-xs font-bold text-ink transition-colors hover:bg-brand-hover">
                 Analyse an advert
@@ -74,7 +74,7 @@ export default function InsightsPage() {
             <Card>
               <CardHeader
                 title="Skill coverage by category"
-                description="Where your recorded skills sit. Unrepresented categories are opportunities, not failures."
+                description="Where your recorded skills sit. Empty categories just mean nothing recorded yet."
               />
               <div className="mt-3">
                 <SkillCoverageChart skills={profile.skills} />
@@ -105,7 +105,7 @@ export default function InsightsPage() {
               <Card>
                 <CardHeader
                   title="Highest priority gaps"
-                  description="Internal prioritisation from advert importance and missing evidence — not market statistics."
+                  description="Prioritised from advert importance and missing evidence, not market statistics."
                   action={
                     <Link to="/gaps" className="link text-xs font-semibold">
                       Gap analysis
@@ -156,7 +156,7 @@ export default function InsightsPage() {
         <CardHeader
           title="How the scoring model works"
           icon={<Scale aria-hidden className="h-4 w-4" />}
-          description="The live configuration of the matching engine, so any score can be audited."
+          description="The matching engine's live configuration, so you can audit any score."
         />
         <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <div className="rounded-xl border border-ink-600 bg-ink-850 p-3">
@@ -182,8 +182,8 @@ export default function InsightsPage() {
           <p>
             <span className="font-semibold text-brand">Formula: </span>
             score = 100 × Σ(weight × matchValue) ÷ Σ(weight). A requirement's weight is its base importance ({MATCH_CONFIG.weights.required} required,{' '}
-            {MATCH_CONFIG.weights.preferred} preferred) multiplied by an emphasis factor of {MATCH_CONFIG.emphasis.min}–{MATCH_CONFIG.emphasis.max} derived
-            from the advert's wording.
+            {MATCH_CONFIG.weights.preferred} preferred) multiplied by an emphasis factor of {MATCH_CONFIG.emphasis.min}–{MATCH_CONFIG.emphasis.max} based on
+            the advert's wording.
           </p>
           <p>
             <span className="font-semibold text-brand">Evidence mapping: </span>
@@ -195,14 +195,14 @@ export default function InsightsPage() {
           </p>
           <p>
             <span className="font-semibold text-brand">Determinism: </span>
-            no randomness, no time-based drift and no external calls are involved. The same profile and advert always produce the same score for a given
+            No randomness, no time-based drift and no external calls. The same profile and advert always produce the same score for a given
             engine version, which is what makes the unit tests meaningful.
           </p>
         </div>
         <div className="mt-4 grid gap-1.5 sm:grid-cols-2">
           {Object.entries(EVIDENCE_SOURCE_LABELS).map(([key, label]) => (
             <p key={key} className="text-[11px] text-brand/65">
-              <span className="font-mono text-brand/50">{key}</span> — {label}
+              <span className="font-mono text-brand/50">{key}</span> · {label}
             </p>
           ))}
         </div>
@@ -212,7 +212,7 @@ export default function InsightsPage() {
         <CardHeader
           title="What is real, what is optional"
           icon={<Info aria-hidden className="h-4 w-4" />}
-          description="A blunt summary so nothing on this platform is over-claimed."
+          description="A blunt summary so nothing here is over-claimed."
         />
         <div className="mt-4 grid gap-4 lg:grid-cols-2">
           <div className="rounded-xl border border-success/30 bg-success-soft p-3.5">
@@ -230,8 +230,8 @@ export default function InsightsPage() {
           <div className="rounded-xl border border-caution/30 bg-caution-soft p-3.5">
             <p className="text-xs font-bold text-caution">Optional, labelled or not yet built</p>
             <ul className="mt-2 space-y-1.5 text-[11px] leading-relaxed text-caution/90">
-              <li>· AI-assisted features require AI_API_KEY; without it the same screens return deterministic local results</li>
-              <li>· Semantic matching is not implemented — matching is lexical with a curated relation graph</li>
+              <li>· AI-assisted features need AI_API_KEY. Without it the same screens return deterministic local results</li>
+              <li>· Semantic matching isn't implemented. Matching is lexical with a curated relation graph</li>
               <li>· No OCR: image-only PDFs report that the text layer is missing</li>
               <li>· No DOCX export and no live job-market data or salary statistics</li>
               <li>· The extension page is a preview inside the website, not an installed browser extension</li>

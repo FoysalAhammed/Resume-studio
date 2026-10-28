@@ -39,7 +39,7 @@ const NAV_ITEMS: NavItem[] = [
   { to: '/resume', label: 'Resume Analyzer', icon: <FileSearch aria-hidden className="h-4 w-4" />, hint: 'Upload a CV and review what was extracted' },
   { to: '/jobs', label: 'Job Explorer', icon: <Briefcase aria-hidden className="h-4 w-4" />, hint: 'Analyse adverts and score compatibility' },
   { to: '/gaps', label: 'Skill Gaps', icon: <Target aria-hidden className="h-4 w-4" />, hint: 'Prioritised gaps for a chosen job' },
-  { to: '/roadmap', label: 'Learning Roadmap', icon: <Route aria-hidden className="h-4 w-4" />, hint: 'Tasks derived from your gaps' },
+  { to: '/roadmap', label: 'Learning Roadmap', icon: <Route aria-hidden className="h-4 w-4" />, hint: 'Tasks built from your gaps' },
   { to: '/studio', label: 'Resume Studio', icon: <PenLine aria-hidden className="h-4 w-4" />, hint: 'Improve CV wording with review' },
   { to: '/cover-letter', label: 'Cover Letter', icon: <Mail aria-hidden className="h-4 w-4" />, hint: 'Generate a draft from your profile' },
   { to: '/interview', label: 'Interview Prep', icon: <MessagesSquare aria-hidden className="h-4 w-4" />, hint: 'Practice questions and heuristic feedback' },
@@ -53,8 +53,8 @@ function ApiStatusPill() {
   if (status === 'checking') return <Badge tone="neutral">Checking API…</Badge>;
   if (status === 'offline') {
     return (
-      <Badge tone="caution" title="The API server is not reachable. In-browser analysis still works; file parsing and AI features need the server.">
-        <span className="hidden sm:inline">API offline — browser only</span>
+      <Badge tone="caution" title="The API server is not reachable. In-browser analysis still works, but file parsing and AI features need the server.">
+        <span className="hidden sm:inline">API offline, browser only</span>
         <span className="sm:hidden">API offline</span>
       </Badge>
     );
@@ -102,7 +102,6 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   return (
     <div className="min-h-screen bg-ink text-brand">
-      {/* Skip link for keyboard users */}
       <a
         href="#main"
         className="sr-only focus:not-sr-only focus:absolute focus:left-3 focus:top-3 focus:z-[120] focus:rounded-lg focus:bg-brand focus:px-3 focus:py-2 focus:text-xs focus:font-bold focus:text-ink"
@@ -111,7 +110,6 @@ export function AppShell({ children }: { children: ReactNode }) {
       </a>
 
       <div className="mx-auto flex w-full max-w-[100rem]">
-        {/* Desktop sidebar */}
         <aside className="sticky top-0 hidden h-screen w-72 flex-shrink-0 flex-col border-r border-ink-600 bg-ink-850 lg:flex">
           <div className="flex items-center gap-2.5 px-5 py-5">
             <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand text-lg font-extrabold text-ink">C</span>
@@ -147,7 +145,6 @@ export function AppShell({ children }: { children: ReactNode }) {
           </div>
         </aside>
 
-        {/* Mobile slide-over navigation */}
         {navOpen ? (
           <div className="fixed inset-0 z-[80] lg:hidden">
             <div className="absolute inset-0 bg-ink-900/80 backdrop-blur-sm" onClick={() => setNavOpen(false)} aria-hidden="true" />
@@ -230,9 +227,9 @@ export function AppShell({ children }: { children: ReactNode }) {
 
             {isSample ? (
               <div className="border-t border-caution/30 bg-caution-soft px-4 py-2.5 text-[11px] leading-relaxed text-brand/85 sm:px-6">
-                <span className="font-bold uppercase tracking-wider text-caution">Demonstration data</span> — this workspace is the fictional
-                candidate “Ayesha Rahman”, provided so the platform can be explored without an API key or your own documents. Nothing here is a real
-                person. Choose <span className="font-semibold text-brand">Start empty</span> to work with your own data.
+                <span className="font-bold uppercase tracking-wider text-caution">Demonstration data</span>: this workspace is a fictional
+                candidate, “Ayesha Rahman”. It's here so you can explore the platform without an API key or your own documents. Nothing here is a real
+                person. Choose <span className="font-semibold text-brand">Start empty</span> to use your own data.
               </div>
             ) : null}
           </header>
@@ -245,9 +242,9 @@ export function AppShell({ children }: { children: ReactNode }) {
             <div className="mx-auto flex max-w-6xl flex-wrap items-start gap-2">
               <Info aria-hidden className="mt-0.5 h-3.5 w-3.5 flex-shrink-0" />
               <p>
-                CareerLens AI is a university project. Results come from deterministic local rules unless an AI provider is configured, in
-                which case the interface labels those results as AI-assisted. Compatibility scores estimate profile-to-advert overlap and do not
-                predict hiring outcomes. Workspace data lives in this browser only. See{' '}
+                CareerLens AI is a university project. Results come from local rules unless an AI provider is configured, in which
+                case they're labelled AI-assisted. Compatibility scores estimate profile-to-advert overlap and don't predict hiring outcomes.
+                Workspace data stays in this browser. See{' '}
                 <span className="font-mono text-brand/70">docs/LIMITATIONS.md</span> for the full list.
               </p>
             </div>

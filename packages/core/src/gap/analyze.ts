@@ -20,7 +20,7 @@ function whyItMatters(label: string, status: 'required' | 'preferred', job: JobD
   if (matchValue === 0) {
     return status === 'required'
       ? `${label} is listed as a required criterion for ${role}, and no supporting evidence was found in your profile.`
-      : `${label} is listed as a preferred criterion for ${role}; it would strengthen an application but is not mandatory.`;
+      : `${label} is listed as a preferred criterion for ${role}. It would strengthen an application but is not mandatory.`;
   }
   if (matchValue >= MATCH_CONFIG.statusThresholds.partial) {
     return `${label} is ${status} for ${role}. You have partial evidence, so the fastest win is turning it into a demonstrable example.`;
@@ -29,9 +29,8 @@ function whyItMatters(label: string, status: 'required' | 'preferred', job: JobD
 }
 
 /**
- * Converts a match report into an ordered, actionable gap list.
- * Priority is an internal recommendation derived from advert importance and the
- * evidence you already have - it is deliberately NOT presented as market data.
+ * Turns a match report into an ordered gap list.
+ * Priority is an internal recommendation, never market data.
  */
 export function analyseSkillGaps(input: GapAnalysisInput): SkillGap[] {
   const { job, report } = input;
@@ -83,7 +82,7 @@ export function analyseSkillGaps(input: GapAnalysisInput): SkillGap[] {
     .sort((a, b) => b.priorityScore - a.priorityScore || a.label.localeCompare(b.label));
 }
 
-/** Days of study at the candidate's stated availability. */
+/** Weeks of study at the candidate's stated availability. */
 export function effortInWeeks(hours: number, weeklyHours: number): number {
   if (weeklyHours <= 0) return 0;
   return roundTo(hours / weeklyHours, 1);

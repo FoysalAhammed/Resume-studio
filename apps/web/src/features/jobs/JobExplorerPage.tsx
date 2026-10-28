@@ -77,7 +77,7 @@ export default function JobExplorerPage() {
           navigate(`/jobs/${response.data.job.id}`);
           return;
         }
-        toast.warning('AI extraction unavailable', `${response.error} The deterministic extractor was used instead.`);
+        toast.warning('AI extraction unavailable', `${response.error} The rule-based extractor was used instead.`);
       }
 
       const job = createJobDescription({
@@ -112,14 +112,14 @@ export default function JobExplorerPage() {
       rawText: description,
     });
     setFormError(null);
-    toast.info('Sample advert loaded', `${creditLine} — paste over it with a real advert whenever you like.`);
+    toast.info('Sample advert loaded', `${creditLine}. Paste over it with a real advert whenever you like.`);
   };
 
   return (
     <div className="space-y-6">
       <PageHeader
         title="Job Explorer"
-        description="Paste a job advert and CareerLens extracts its requirements with deterministic keyword and pattern rules, then scores each one against your recorded evidence. Adverts are stored in this browser so you can compare roles."
+        description="Paste a job advert and CareerLens extracts its requirements with keyword and pattern rules, then scores each one against your evidence. Adverts are kept in this browser so you can compare roles."
         action={<Badge tone="neutral">{workspace.jobs.length} saved</Badge>}
       />
 
@@ -127,7 +127,7 @@ export default function JobExplorerPage() {
         <CardHeader
           title="Analyse an advert"
           icon={<Plus aria-hidden className="h-4 w-4" />}
-          description="Nothing is scraped from the web: you paste the text of an advert you already have. That keeps the source of every requirement auditable."
+          description="Nothing is scraped from the web, you paste the text of an advert you already have. Every requirement stays traceable to its source."
           action={<SourceBadge source={useAi && aiAvailable ? 'ai' : 'local'} />}
         />
 
@@ -141,7 +141,7 @@ export default function JobExplorerPage() {
         </div>
 
         <div className="mt-4 grid gap-4 sm:grid-cols-2">
-          <Field label="Job title" hint="Optional — inferred from the advert if left blank.">
+          <Field label="Job title" hint="Optional. Inferred from the advert if left blank.">
             <Input value={form.title} onChange={(event) => setForm({ ...form, title: event.target.value })} placeholder="Junior Frontend Engineer" />
           </Field>
           <Field label="Company">
@@ -159,7 +159,7 @@ export default function JobExplorerPage() {
               <option value="senior">Senior</option>
             </Select>
           </Field>
-          <Field label="Advert URL" hint="Stored for your reference only — CareerLens never fetches it." className="sm:col-span-2">
+          <Field label="Advert URL" hint="Stored for your reference only. CareerLens never fetches it." className="sm:col-span-2">
             <Input value={form.sourceUrl} onChange={(event) => setForm({ ...form, sourceUrl: event.target.value })} placeholder="https://…" />
           </Field>
         </div>
@@ -183,15 +183,15 @@ export default function JobExplorerPage() {
           <div className="mt-4">
             <Checkbox
               label="Refine the extracted requirements with the configured AI provider"
-              description="The AI reviews the advert and may recategorise or add criteria. Its output is validated against a schema before use, and rule-based extraction runs first either way."
+              description="The AI reviews the advert and can recategorise or add criteria. Its output is checked against a schema first, and rule-based extraction runs either way."
               checked={useAi}
               onChange={(event) => setUseAi(event.target.checked)}
             />
           </div>
         ) : (
           <p className="mt-4 rounded-xl border border-ink-600 bg-ink-850 p-3 text-[11px] leading-relaxed text-brand/60">
-            No AI provider is configured, so requirements are extracted with the deterministic rule-based analyser. That analyser is what runs by
-            default in every configuration; adding an AI provider only refines its output. See docs/API.md for the provider setup.
+            No AI provider is configured, so requirements come from the rule-based analyser. That runs by default in every setup; an AI provider only
+            refines its output. See docs/API.md for provider setup.
           </p>
         )}
 
@@ -207,7 +207,7 @@ export default function JobExplorerPage() {
         <CardHeader
           title="Saved adverts"
           icon={<Briefcase aria-hidden className="h-4 w-4" />}
-          description="Scores shown here are recomputed from your current profile, so they stay consistent with the job detail page."
+          description="Scores are recalculated from your current profile, so they match the job detail page."
         />
         {workspace.jobs.length ? (
           <ul className="mt-4 space-y-2.5">

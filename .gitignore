@@ -15,6 +15,9 @@ apps/api/data/
 *.log
 npm-debug.log*
 
+# Vercel
+.vercel
+
 # OS / editor
 .DS_Store
 Thumbs.db

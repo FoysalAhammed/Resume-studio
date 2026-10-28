@@ -13,14 +13,7 @@ export interface JobAnalysis {
   gaps: SkillGap[];
 }
 
-/**
- * Computes the compatibility report and the derived gap list for a job.
- *
- * The engine is deterministic, so the value rendered is always derived from the
- * current profile and advert - it can never drift from what is stored. The
- * report is written into the workspace so the dashboard and insights pages can
- * reference the latest result without recomputing it.
- */
+// The report is stored in the workspace so other pages can read it without recomputing.
 export function useJobAnalysis(job: JobDescription | undefined): JobAnalysis | null {
   const { workspace, dispatch } = useWorkspace();
   const profile = workspace.profile;
@@ -44,7 +37,6 @@ export function useJobAnalysis(job: JobDescription | undefined): JobAnalysis | n
   return analysis;
 }
 
-/** The job the user most recently interacted with, used as a sensible default. */
 export function useLatestJob(): JobDescription | undefined {
   const { workspace } = useWorkspace();
   return workspace.jobs[0];

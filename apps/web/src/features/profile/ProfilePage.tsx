@@ -143,7 +143,7 @@ export default function ProfilePage() {
     <div className="space-y-6">
       <PageHeader
         title="My Career Profile"
-        description="This is the evidence base for every calculation in CareerLens. Nothing here is guessed: you record it, or a parsed CV proposes it for your approval. Skills you add are matched against a curated technology lexicon so related experience can earn partial credit."
+        description="Everything CareerLens works out comes from here. You enter it yourself, or a parsed CV suggests it for you to approve. Added skills are checked against a technology lexicon, so a related skill still earns partial credit."
         action={
           <Badge tone={completeness.score >= 80 ? 'success' : completeness.score >= 50 ? 'brand' : 'caution'}>
             {completeness.score}% complete
@@ -155,7 +155,7 @@ export default function ProfilePage() {
         <CardHeader
           title="Profile completeness"
           icon={<BadgeCheck aria-hidden className="h-4 w-4" />}
-          description="A checklist of the information you have entered. It measures profile data, not employability."
+          description="A checklist of what you have entered. It only measures profile data."
         />
         <div className="mt-4">
           <Progress value={completeness.score} label="Profile completeness" tone={completeness.score >= 80 ? 'success' : 'brand'} />
@@ -177,7 +177,7 @@ export default function ProfilePage() {
         <CardHeader
           title="Identity and summary"
           icon={<UserRound aria-hidden className="h-4 w-4" />}
-          description="Used in generated documents and as the headline of your profile."
+          description="Used in generated documents and as your profile headline."
           action={
             <Button size="sm" onClick={saveIdentity}>
               Save changes
@@ -258,7 +258,7 @@ export default function ProfilePage() {
             htmlFor="summary"
             className="sm:col-span-2"
             error={errors['summary']}
-            hint="Two or three lines about your focus. The Resume Studio can draft this from the facts you have already recorded."
+            hint="Two or three lines about what you focus on. Resume Studio can draft it from the facts you have recorded."
           >
             <Textarea
               id="summary"
@@ -320,7 +320,7 @@ export default function ProfilePage() {
         <CardHeader
           title="Skills"
           icon={<Wrench aria-hidden className="h-4 w-4" />}
-          description="Each skill carries the evidence behind it. Matching distinguishes self-reported, resume-derived, project-supported and verified evidence."
+          description="Each skill keeps the evidence behind it. Matching treats self-reported, resume-derived, project-supported and verified evidence differently."
           action={<Badge tone="neutral">{profile.skills.length} recorded</Badge>}
         />
         <div className="mt-4 grid gap-3 sm:grid-cols-[1fr_auto_auto]">
@@ -359,7 +359,7 @@ export default function ProfilePage() {
 
         {profile.skills.length === 0 ? (
           <p className="mt-4 rounded-xl border border-dashed border-ink-600 bg-ink-850/60 p-4 text-xs text-brand/60">
-            No skills recorded yet. Job matching has nothing to work with until you add at least a few, or apply the results of a parsed CV.
+            No skills yet. Matching has nothing to work with until you add a few, or apply a parsed CV.
           </p>
         ) : (
           <div className="mt-5 space-y-4">
@@ -417,7 +417,7 @@ export default function ProfilePage() {
         description="Internships, part-time jobs, volunteering and freelance work all count as experience."
         addLabel="Add experience"
         emptyTitle="No experience recorded"
-        emptyDescription="Experience entries give the matching engine evidence beyond a skills list - even unpaid or academic work."
+        emptyDescription="Experience entries give the matching engine more to work with than a skills list. Unpaid or academic work counts too."
         items={profile.experience}
         createEmpty={() => ({
           id: newId('experience'),
@@ -483,7 +483,7 @@ export default function ProfilePage() {
             </Field>
             <LinesField
               label="Achievements"
-              hint="One per line. Avoid numbers you cannot verify - the Resume Studio will prompt you rather than invent them."
+              hint="One per line. Avoid numbers you can't verify. Resume Studio will ask instead of inventing them."
               lines={draft.achievements}
               onChange={(lines) => update({ achievements: lines })}
               rows={3}
@@ -564,10 +564,10 @@ export default function ProfilePage() {
       <ItemList<ProjectEntry>
         title="Projects"
         icon={<FolderKanban aria-hidden className="h-4 w-4" />}
-        description="Projects are the strongest evidence for early-career profiles: they turn a claimed skill into something demonstrable."
+        description="Projects are the strongest evidence for early-career profiles. They show a skill in action instead of just claiming it."
         addLabel="Add project"
         emptyTitle="No projects recorded"
-        emptyDescription="Add a project with the technologies you genuinely used. Matching gives project-backed evidence more weight than a bare skill listing."
+        emptyDescription="Add a project with the technologies you actually used. Matching weights project-backed evidence more than a bare skill listing."
         items={profile.projects}
         createEmpty={() => ({ id: newId('project'), name: '', description: '', link: '', technologies: [], outcomes: [], origin: 'user' })}
         validate={(draft) => (draft.name.trim() ? null : 'A project name is required.')}
@@ -629,7 +629,7 @@ export default function ProfilePage() {
         icon={<Award aria-hidden className="h-4 w-4" />}
         addLabel="Add certification"
         emptyTitle="No certifications recorded"
-        emptyDescription="Courses and certificates count as evidence, but they are never labelled as verified unless a source is actually recorded."
+        emptyDescription="Courses and certificates count as evidence, but they are only marked verified when a source is recorded."
         items={profile.certifications}
         createEmpty={() => ({ id: newId('certification'), name: '', issuer: '', origin: 'user' })}
         validate={(draft) => (draft.name.trim() && draft.issuer.trim() ? null : 'A name and issuer are required.')}
@@ -676,25 +676,25 @@ export default function ProfilePage() {
         <CardHeader
           title="How this profile is used"
           icon={<Info aria-hidden className="h-4 w-4" />}
-          description="Transparency about where your data goes."
+          description="Where your data goes."
         />
         <div className="mt-4 space-y-2">
           <Disclosure label="Where is this data stored?" defaultOpen>
-            It is saved in this browser using IndexedDB on your machine. The API server does not receive or store your profile: it only ever sees the
-            specific payload a feature needs (for example a job advert, or a short skill list from the extension preview). Local browser storage is a
-            demonstration mechanism, not secure production storage. See docs/DATABASE.md for the PostgreSQL design that would replace it.
+            It is saved in this browser with IndexedDB. The API server never receives or stores your profile: it only sees the payload a feature needs,
+            like a job advert or a short skill list from the extension preview. Browser storage is for demonstration, not secure production storage. See
+            docs/DATABASE.md for the PostgreSQL design that would replace it.
           </Disclosure>
           <Disclosure label="How does matching use these skills?">
             <p>
-              Every advert requirement is scored from 0 to 1 against the evidence recorded here. A recorded skill counts fully when it is at the
-              expected level, a related skill earns partial credit, and a project or work example counts as supporting evidence. Nothing is inferred
-              from the absence of a keyword, which is why a gap is always presented as “no evidence found” rather than “you lack this skill”.
+              Each advert requirement is scored from 0 to 1 against the evidence recorded here. A skill at the expected level counts fully, a related
+              skill earns partial credit, and a project or work example supports it. A missing keyword is never treated as proof you lack the skill, so a
+              gap always shows as “no evidence found”.
             </p>
           </Disclosure>
           <Disclosure label="What is a sample profile?">
             <p>
-              The demonstration workspace contains a fictional candidate, clearly labelled throughout the interface. Loading it never mixes with your
-              own data unless you explicitly choose to load it, and choosing “Start empty” removes it completely.
+              The demo workspace has a fictional candidate, labelled as such throughout. Loading it never mixes with your own data, and choosing
+              “Start empty” removes it completely.
             </p>
           </Disclosure>
         </div>

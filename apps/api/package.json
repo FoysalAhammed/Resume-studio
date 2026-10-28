@@ -2,7 +2,7 @@
   "name": "@careerlens/api",
   "version": "1.0.0",
   "private": true,
-  "description": "CareerLens AI API - resume parsing, job analysis, explainable matching and the optional AI provider adapter.",
+  "description": "CareerLens AI API: parses resumes, extracts job requirements, scores matches and talks to an optional AI provider.",
   "type": "commonjs",
   "main": "dist/server.js",
   "scripts": {

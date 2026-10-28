@@ -21,8 +21,8 @@ Stop them with `Ctrl+C` in that terminal.
 ## The 10-minute demonstration
 
 ### 1. Open the application
-You land on **Overview** with an empty workspace. Note the honest framing: it offers two paths —
-load the labelled demonstration workspace, or build your own — and states that no API key is needed.
+You land on **Overview** with an empty workspace. The screen makes the choice clear: it offers two
+paths, load the labelled demonstration workspace or build your own, and states that no API key is needed.
 
 ### 2. Load the demonstration workspace
 Click **Load demonstration workspace**.
@@ -30,13 +30,13 @@ Click **Load demonstration workspace**.
 - An amber banner marks the workspace as **demonstration data** and names the fictional candidate
   (Ayesha Rahman). This labelling follows the data everywhere it appears.
 - Say clearly: *"This is a fictional candidate, generated deterministically. The same data is produced
-  on every load — there is no randomness anywhere in this project."*
+  on every load. There is no randomness anywhere in this project."*
 
 ### 3. Review the career profile
 Go to **Career Profile**.
 
-- **Profile completeness** is a checklist of data you entered, not an employability score — worth
-  pointing out, because most such products imply otherwise.
+- **Profile completeness** is a checklist of data you entered. It is not an employability score,
+  which is worth pointing out because most such products imply otherwise.
 - The **Skills** card groups skills by category. Each skill carries **evidence with a source**:
   `resume-derived`, `project-supported`, `self-reported`. Nothing is marked "verified" unless a source
   was actually recorded.
@@ -47,7 +47,7 @@ Go to **Career Profile**.
 Go to **Job Explorer**.
 
 - Press **Junior Frontend Engineer** under "Try a sample advert" to load a sample advert, or paste a
-  real one from any job board (copy the text; the app never scrapes).
+  real one from any job board (copy the text, and the app never scrapes).
 - Press **Extract requirements**. The result shows how many required and preferred criteria were found,
   plus a **"How this was extracted"** panel listing the deterministic rules used.
 - Open the advert → **Edit requirements** tab: toggle a requirement between *required* and
@@ -60,7 +60,7 @@ Open **Compatibility report**.
 - The score is a **weighted requirement match**: `100 × Σ(weight × matchValue) ÷ Σ(weight)`, with
   required criteria weighted twice as heavily as preferred ones.
 - The chart splits **confirmed / partial / no evidence** across all, required and preferred criteria.
-- **Every requirement has a written explanation** — the strongest piece of evidence behind its value,
+- **Every requirement has a written explanation**: the strongest piece of evidence behind its value,
   or an explicit statement that no evidence was found.
 - Point at the disclaimer: the score estimates profile-to-advert overlap and is **not** a prediction
   of being hired, and a missing keyword is not proof of a missing skill.
@@ -84,15 +84,15 @@ Press **Generate roadmap** (from Skill Gaps or the advert page).
 - **Complete a task** and watch the progress figure move. It is computed from task states only:
   `completed ÷ total`, with in-progress tasks counting half their hours toward effort.
 - **Recalculate** the plan after changing your profile: completed tasks keep their status.
-- Try the budget case by setting weekly hours very low in the profile — the plan tells you what it had
+- Try the budget case by setting weekly hours very low in the profile. The plan tells you what it had
   to leave out instead of silently overrunning.
 
 ### 8. Improve a resume section
 Open **Resume Studio**.
 
 - Each card shows the **original**, a **draft**, a **word-level diff** and the **reason** for the change.
-- Find a bullet with no measurable result: the studio **asks you for the figure** rather than inventing
-  one. That is the clearest single demonstration of the project's honesty rule.
+- Find a bullet with no measurable result: the studio **asks you for the figure** instead of inventing
+  one. That shows the project's rule about not inventing facts more clearly than anything else.
 - Press **Apply to profile** to commit a draft, or **Print / Save as PDF** to export the assembled CV.
 
 ### 9. Generate a cover letter
@@ -107,12 +107,12 @@ Open **Cover Letter**.
 Open **Career Insights** (model explainability, what is real vs optional) and **Settings**.
 
 - **Settings → Local workspace storage**: shows the storage mode, a data inventory and export/import.
-  Be explicit that this is single-device browser storage with no authentication — demonstration
-  persistence, not production storage.
+  Be explicit that this is single-device browser storage with no authentication. It is demonstration
+  persistence and not production storage.
 - **Settings → AI provider**: shows whether a provider is configured. With no key, it shows *"No AI
   provider is configured"* and explains that every screen still works.
 - **Settings → Limitations of this build**: read it aloud. It lists no OCR, no DOCX export, no live
-  job-market data, lexical rather than semantic matching, heuristic interview feedback, and the fact
+  job-market data, lexical matching instead of semantic, heuristic interview feedback, and the fact
   that the extension page is a preview.
 
 Then walk the code structure: `packages/core` (pure domain logic and 133 tests),
@@ -146,8 +146,8 @@ determinism and the exact arithmetic for known inputs, and the same inputs alway
 result in the browser and the API.
 
 **"What happens with a scanned CV?"**
-The extractor finds no text layer, reports that clearly, and says OCR is not implemented — rather than
-silently returning nothing or pretending to read it.
+The extractor finds no text layer, reports that clearly, and says OCR is not implemented. It does not
+silently return nothing or pretend to read it.
 
 **"Where is the data stored, and what happens on refresh?"**
 In IndexedDB in your browser, restored on load. The API stores nothing about you. Export/import in

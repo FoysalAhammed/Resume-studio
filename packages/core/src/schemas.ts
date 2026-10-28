@@ -1,8 +1,6 @@
 import { z } from 'zod';
 import { LIMITS } from './constants';
 
-/* ------------------------------------------------------------------ enums -- */
-
 export const skillCategorySchema = z.enum([
   'Programming Languages',
   'Frontend',
@@ -35,8 +33,6 @@ export const experienceLevelSchema = z.enum(['student', 'entry', 'mid', 'senior'
 export const workModeSchema = z.enum(['remote', 'hybrid', 'onsite', 'flexible']);
 export const taskStatusSchema = z.enum(['not-started', 'in-progress', 'completed']);
 export const requirementStatusSchema = z.enum(['required', 'preferred']);
-
-/* --------------------------------------------------------------- profile -- */
 
 export const skillEvidenceSchema = z.object({
   source: evidenceSourceSchema,
@@ -126,8 +122,6 @@ export const profileSchema = z.object({
 
 export const storedProfileSchema = profileSchema.extend({ origin: z.enum(['user', 'sample']) });
 
-/* ------------------------------------------------------------------ jobs -- */
-
 export const jobRequirementSchema = z.object({
   id: z.string().min(1).max(80),
   skillId: z.string().max(80).optional(),
@@ -161,8 +155,6 @@ export const jobSchema = z.object({
   createdAt: z.string(),
   updatedAt: z.string(),
 });
-
-/* --------------------------------------------------------------- roadmap -- */
 
 export const roadmapTaskSchema = z.object({
   id: z.string().min(1).max(80),
@@ -199,8 +191,6 @@ export const roadmapSchema = z.object({
   createdAt: z.string(),
   updatedAt: z.string(),
 });
-
-/* ------------------------------------------------------------- workspace -- */
 
 export const resumeAnalysisSchema = z.object({
   id: z.string().min(1).max(80),
@@ -349,8 +339,6 @@ export const workspaceSchema = z.object({
   updatedAt: z.string(),
 });
 
-/* ------------------------------------------------------- API request bodies -- */
-
 export const jobAnalyzeRequestSchema = z.object({
   title: z.string().max(160).optional(),
   company: z.string().max(160).optional(),
@@ -415,9 +403,6 @@ export const extensionAnalyzeRequestSchema = z.object({
     lexiconId: z.string().max(80).optional(),
   })).max(120),
 });
-
-/* --------------------------------------------------- AI structured outputs -- */
-// Every AI response is parsed through one of these contracts before it is used.
 
 export const aiRequirementListSchema = z.object({
   requirements: z.array(z.object({

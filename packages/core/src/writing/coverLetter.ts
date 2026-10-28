@@ -15,11 +15,7 @@ export interface CoverLetterInput {
 const MOTIVATION_PLACEHOLDER =
   '[Add one or two sentences about why this company and this role interest you - a specific product, project or team.]';
 
-/**
- * Deterministic cover-letter draft built only from recorded profile facts.
- * Unverifiable claims are never inserted: missing information becomes a
- * bracketed instruction for the user instead.
- */
+/** Deterministic draft from recorded profile facts only. Anything unverifiable becomes a bracketed instruction instead. */
 export function generateCoverLetter(input: CoverLetterInput): DraftDocument {
   const { profile, job, motivation } = input;
   const notes: string[] = [];
@@ -60,12 +56,12 @@ export function generateCoverLetter(input: CoverLetterInput): DraftDocument {
       `Your advert lists ${matched.join(', ')}${matched.length === 1 ? '' : ' among its requirements'}. These are areas I have recorded experience in${project ? `, most recently through ${project.name}` : ''}. ${project?.description ? `That project involved ${lowerFirst(project.description.replace(/\.$/, ''))}.` : ''}`.trim(),
     );
   } else {
-    paragraphs.push('My attached CV sets out my experience; I would welcome the chance to discuss how it maps to your requirements.');
-    notes.push('No requirement keywords matched your recorded skills, so the middle paragraph is deliberately general.');
+    paragraphs.push('My attached CV sets out my experience. I would welcome the chance to discuss how it maps to your requirements.');
+    notes.push('No requirement keywords matched your recorded skills, so the middle paragraph stays general.');
   }
 
   paragraphs.push(motivation.trim() || MOTIVATION_PLACEHOLDER);
-  if (!motivation.trim()) notes.push('The motivation paragraph is a placeholder - replace it with your own reasons before sending.');
+  if (!motivation.trim()) notes.push('The motivation paragraph is a placeholder. Replace it with your own reasons before sending.');
 
   if (input.addressGap) {
     paragraphs.push('I am currently strengthening the areas your advert identifies as gaps and would be glad to discuss my progress on them.');

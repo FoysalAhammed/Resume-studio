@@ -2,7 +2,7 @@ import type { Request, RequestHandler } from 'express';
 import type { ZodTypeAny } from 'zod';
 import { AppError } from './errors';
 
-/** Validates and replaces req.body. Throws a 400 AppError on failure. */
+// Validates and replaces req.body. Throws a 400 on failure.
 export function validateBody<T extends ZodTypeAny>(schema: T): RequestHandler {
   return (req: Request, _res, next) => {
     const parsed = schema.safeParse(req.body);
@@ -19,7 +19,6 @@ export function validateBody<T extends ZodTypeAny>(schema: T): RequestHandler {
   };
 }
 
-/** Reads a header value safely, trimming and bounding its length. */
 export function safeHeader(req: Request, name: string, maxLength = 200): string {
   const raw = req.headers[name.toLowerCase()];
   const value = Array.isArray(raw) ? raw[0] : raw;

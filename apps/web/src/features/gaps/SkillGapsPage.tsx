@@ -25,11 +25,11 @@ export default function SkillGapsPage() {
   if (!job) {
     return (
       <div className="space-y-6">
-        <PageHeader title="Skill Gap Analysis" description="Gaps are derived from a compatibility report, so an advert has to be analysed first." />
+        <PageHeader title="Skill Gap Analysis" description="Gaps come from a compatibility report, so analyse an advert first." />
         <EmptyState
           icon={<Target aria-hidden className="h-8 w-8" />}
           title="No advert analysed yet"
-          description="Skill gaps are the requirements your evidence does not yet support. Analyse an advert and CareerLens will produce a prioritised, explainable list."
+          description="Skill gaps are the requirements your evidence doesn't cover yet. Analyse an advert to get a prioritised list you can trace back."
           action={
             <Link to="/jobs" className="rounded-xl bg-brand px-4 py-2.5 text-xs font-bold text-ink transition-colors hover:bg-brand-hover">
               Analyse an advert
@@ -55,7 +55,7 @@ export default function SkillGapsPage() {
       roadmap,
       activity: { kind: 'roadmap-generated', message: `Built a roadmap from ${gaps.length} gaps for ${job.title}.` },
     });
-    toast.success('Roadmap ready', 'Tasks were created for each prioritised gap, plus application tasks.');
+    toast.success('Roadmap ready', 'One task per prioritised gap, plus application tasks.');
     navigate('/roadmap');
   };
 
@@ -63,7 +63,7 @@ export default function SkillGapsPage() {
     <div className="space-y-6">
       <PageHeader
         title="Skill Gap Analysis"
-        description="Every gap below is a requirement from the selected advert that your profile does not yet fully support. Priority is an internal recommendation based on advert importance and the evidence you already have — it is not market data."
+        description="Each gap is a requirement from this advert that your profile doesn't cover yet. Priority comes from advert importance and the evidence you already have, not market data."
         action={
           <Button size="sm" onClick={buildRoadmap} icon={<RouteIcon aria-hidden className="h-3.5 w-3.5" />}> 
             {existingRoadmap ? 'Recalculate roadmap' : 'Generate roadmap'}
@@ -75,7 +75,7 @@ export default function SkillGapsPage() {
         <CardHeader
           title="Choose an advert"
           icon={<Target aria-hidden className="h-4 w-4" />}
-          description="Gaps are always relative to a specific role, because requirements differ between adverts."
+          description="Gaps are always relative to one role. Requirements differ between adverts."
           action={analysis ? <Badge tone="brand">{analysis.report.score}% match</Badge> : null}
         />
         <div className="mt-4 max-w-xl">
@@ -95,10 +95,10 @@ export default function SkillGapsPage() {
         <CardHeader
           title={`Prioritised gaps (${gaps.length})`}
           icon={<ListChecks aria-hidden className="h-4 w-4" />}
-          description="Expand a gap to see why it matters, the evidence found so far, a suggested practical task and reference material."
+          description="Expand a gap to see why it matters, the evidence found so far, a suggested task and reference material."
         />
         <div className="mt-4">
-          <GapList gaps={gaps} emptyMessage="Every requirement in this advert is supported by your recorded evidence, so there is nothing to close." />
+          <GapList gaps={gaps} emptyMessage="Every requirement here is covered by your recorded evidence, so there is nothing to close." />
         </div>
       </Card>
     </div>

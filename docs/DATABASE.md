@@ -5,7 +5,7 @@
 **Browser `IndexedDB`.** The whole workspace is a single JSON document stored under one key by
 `apps/web/src/lib/persistence.ts`, validated with `workspaceSchema` on the way in and out. If
 IndexedDB is unavailable (private browsing, storage disabled), the app keeps working in memory and
-Settings says so rather than pretending to have saved anything.
+Settings says so instead of pretending to have saved anything.
 
 This is deliberately described as **demonstration persistence**:
 
@@ -19,7 +19,7 @@ There is **no `DATABASE_URL` requirement and no database server needed**. The AP
 ## The PostgreSQL + Prisma design that would replace it
 
 The workspace entity shapes were chosen so they map cleanly onto tables. This is a design for the
-next stage, not a claim that it is implemented — no Prisma schema, migration or seed script ships in
+next stage and it is not implemented. No Prisma schema, migration or seed script ships in
 this repository, because unused database code would be dead weight.
 
 ```prisma
@@ -228,10 +228,10 @@ model ActivityEvent {
 ### Access rules
 
 - Every table that holds user data carries `userId` (directly or through a parent) so a query can be
-  scoped server-side. Cross-user reads must be impossible by construction, not by front-end filtering.
+  scoped server-side. Cross-user reads must be impossible by construction. Front-end filtering is not enough.
 - `onDelete: Cascade` from `User` down means deleting an account removes everything it owned.
-- `@@unique([profileId, name])` prevents duplicate skills; `@@unique([jobId, profileId, engineVersion])`
-  reflects the deterministic nature of matching — the same inputs and engine produce one result.
+- `@@unique([profileId, name])` prevents duplicate skills. `@@unique([jobId, profileId, engineVersion])`
+  reflects the deterministic nature of matching: the same inputs and engine produce one result.
 - Payloads of extracted text (`ResumeDocument.analysis`) are stored as JSON because their shape is
   already validated by `resumeAnalysisSchema` before they are written.
 
@@ -240,12 +240,12 @@ model ActivityEvent {
 A real deployment would use `prisma migrate dev` for schema changes and a `prisma/seed.ts` script that
 inserts the same fictional demonstration data currently produced by
 `packages/core/src/sample/workspace.ts` (candidate, three adverts, a parsed CV, a roadmap and a cover
-letter draft). Nothing would change about the data itself — only where it lives.
+letter draft). Nothing would change about the data itself, only where it lives.
 
 ### Migration path from the browser
 
 1. Add Prisma + PostgreSQL, generate the models above, run the initial migration.
-2. Add authentication; every `/api` route that touches user data resolves the user server-side.
+2. Add authentication. Every `/api` route that touches user data resolves the user server-side.
 3. Replace the web app's persistence layer with API calls. The interface already exists: the
    `WorkspaceProvider` actions are the only writers, so the change is contained to one module.
 4. Import existing browser workspaces with the JSON export already provided in Settings.

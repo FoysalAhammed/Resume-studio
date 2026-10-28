@@ -1,57 +1,47 @@
 import type { ExperienceLevel, Proficiency } from './types';
 
-/**
- * Every number the explainable matching engine uses lives here so the model is
- * configurable in one place and reproducible across runs.
- */
+/** All the matching numbers live here so runs stay reproducible. */
 export const MATCH_CONFIG = {
   version: '1.0.0',
-  /** Base importance of a requirement. */
   weights: {
     required: 3,
     preferred: 1.5,
   },
-  /** "must have" / ALL CAPS / repeated mentions can raise importance slightly. */
+  /** "must have", ALL CAPS or repeated mentions nudge this up. */
   emphasis: {
     min: 1,
     max: 1.3,
   },
-  /** Match value awarded for a direct, aligned skill. */
   directMatch: 1,
-  /** Match value awarded for a direct skill below the target proficiency. */
   proficiencyScore: {
     beginner: 0.7,
     intermediate: 0.85,
     advanced: 1,
     expert: 1,
   } satisfies Record<Proficiency, number>,
-  /** Related-skill evidence: partial credit scaled by how close the relation is. */
+  /** Partial credit for a related skill, scaled by how close it is. */
   relatedSkill(value: number): number {
     return 0.4 + 0.4 * value;
   },
-  /** Evidence found only in a project description / technology list. */
+  /** Evidence from a project description or its technology list. */
   projectMention: 0.7,
   projectTechnology: 0.85,
-  /** Evidence found in a work-experience description. */
   experienceMention: 0.8,
-  /** Evidence from a certification. */
   certification: 0.65,
-  /** Bonus per extra independent evidence source (max limited below). */
+  /** Small bonus per extra independent source, capped below. */
   multiSourceBonus: 0.05,
   maxMultiSourceBonus: 0.1,
-  /** Thresholds that map a numeric match value onto a human status. */
+  /** Cut-offs that turn the match value into a human status. */
   statusThresholds: {
     confirmed: 0.85,
     partial: 0.4,
   },
-  /** Grade bands for the overall score. */
   grades: [
     { min: 85, label: 'Strong fit' },
     { min: 70, label: 'Good fit' },
     { min: 50, label: 'Developing fit' },
     { min: 0, label: 'Early fit' },
   ],
-  /** Expected proficiency for a requirement given its status and candidate level. */
   targetProficiency: {
     required: 'intermediate',
     preferred: 'beginner',

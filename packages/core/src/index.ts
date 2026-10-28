@@ -1,9 +1,4 @@
-/**
- * @careerlens/core - the framework-agnostic domain layer.
- *
- * Everything exported here is pure TypeScript: it runs unchanged in the browser,
- * in the Node API and in the unit tests. No DOM, no network, no randomness.
- */
+/** @careerlens/core - the domain layer. Pure TypeScript: no DOM, no network, no randomness. */
 
 export * from './types';
 export * from './constants';

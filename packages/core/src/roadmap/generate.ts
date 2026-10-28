@@ -90,9 +90,8 @@ function buildGapTasks(gap: SkillGap, priority: number): RoadmapTask[] {
 }
 
 /**
- * Deterministic roadmap generation.
- * The same profile, gaps and settings always produce the same plan, which keeps
- * demonstrations reproducible and makes the output testable.
+ * Deterministic: the same profile, gaps and settings always give the same plan.
+ * That keeps demos reproducible and the output testable.
  */
 export function generateRoadmap(request: RoadmapRequest): LearningRoadmap {
   const weeklyHours = request.weeklyHours && request.weeklyHours > 0 ? request.weeklyHours : 6;
@@ -108,13 +107,13 @@ export function generateRoadmap(request: RoadmapRequest): LearningRoadmap {
   const notes: string[] = [];
 
   if (ordered.length === 0) {
-    notes.push('No skill gaps were supplied, so this plan only contains application tasks. Add gaps from the Skill Gap Analysis page for a targeted plan.');
+    notes.push('No skill gaps were supplied, so this plan only has application tasks. Add gaps from the Skill Gap Analysis page for a targeted plan.');
   }
 
   const tasks: RoadmapTask[] = [];
   let usedHours = 0;
 
-  // Application tasks are always included - a plan that never reaches applying is not a plan.
+  // Always include application tasks. A plan that never reaches applying is not a plan.
   const applicationBlueprints = applicationsTasks(request.targetRole || 'your target role');
   const applicationTasks: RoadmapTask[] = applicationBlueprints.map((blueprint, i) => ({
     id: makeId('task', `applications:${request.targetRole}:${i}`),
@@ -161,7 +160,7 @@ export function generateRoadmap(request: RoadmapRequest): LearningRoadmap {
 
   if (totalHours > capacity) {
     notes.push(
-      `Heads up: the minimum viable plan is about ${totalHours} hours, which is more than the ${capacity} hours available at ${weeklyHours}h per week for ${horizonWeeks} weeks. Extend the horizon or increase your weekly availability.`,
+      `Heads up: even the smallest plan is about ${totalHours} hours, more than the ${capacity} hours you have at ${weeklyHours}h per week for ${horizonWeeks} weeks. Extend the horizon or increase your weekly availability.`,
     );
   }
 
@@ -187,7 +186,7 @@ export function generateRoadmap(request: RoadmapRequest): LearningRoadmap {
   };
 }
 
-/** Progress is derived from real task states only. */
+/** Counts real task states, nothing else. */
 export function computeRoadmapProgress(roadmap: LearningRoadmap): RoadmapProgress {
   const total = roadmap.tasks.length;
   const completed = roadmap.tasks.filter((task) => task.status === 'completed');
@@ -211,8 +210,8 @@ export function computeRoadmapProgress(roadmap: LearningRoadmap): RoadmapProgres
 }
 
 /**
- * Reuses statuses from a previous plan when the task ids still match, so
- * recalculating a roadmap never silently loses completed work.
+ * Keeps statuses when the task ids still match, so recalculating a roadmap
+ * never silently loses completed work.
  */
 export function preserveTaskState(previous: LearningRoadmap | undefined, next: LearningRoadmap): LearningRoadmap {
   if (!previous) return next;

@@ -1,5 +1,3 @@
-/** Small presentation helpers shared by the feature pages. */
-
 export function classNames(...values: (string | false | null | undefined)[]): string {
   return values.filter(Boolean).join(' ');
 }
@@ -49,7 +47,6 @@ export function initials(name: string): string {
   return parts.map((part) => part.charAt(0).toUpperCase()).join('');
 }
 
-/** Maps a 0-100 score onto the app's colour language. */
 export function scoreTone(score: number): 'success' | 'brand' | 'caution' | 'danger' {
   if (score >= 75) return 'success';
   if (score >= 55) return 'brand';

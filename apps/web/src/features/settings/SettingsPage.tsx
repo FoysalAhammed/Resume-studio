@@ -66,7 +66,7 @@ export default function SettingsPage() {
     <div className="space-y-6">
       <PageHeader
         title="Settings"
-        description="Data controls, AI provider status, interface preferences and the honest limits of this build. Everything here applies to this browser workspace only."
+        description="Data controls, AI provider status and the limits of this build. Everything here applies to this browser only."
         action={<SourceBadge source={workspace.origin === 'sample' ? 'sample' : 'local'} />}
       />
 
@@ -74,14 +74,14 @@ export default function SettingsPage() {
         <CardHeader
           title="Local workspace storage"
           icon={<Database aria-hidden className="h-4 w-4" />}
-          description="Your workspace is stored in this browser using IndexedDB. It is not sent to the API server, not synced between devices and not encrypted."
+          description="Your workspace lives in this browser's IndexedDB. It isn't sent to the API server, synced between devices or encrypted."
           action={<Badge tone={persisted ? 'success' : 'caution'}>{persisted ? `Saved (${persistenceMode()})` : 'Memory only'}</Badge>}
         />
 
         {!persisted ? (
           <p className="mt-4 rounded-xl border border-caution/40 bg-caution-soft p-3 text-[11px] leading-relaxed text-caution">
-            IndexedDB is unavailable, so this session is running in memory. Data will be lost when the tab closes. Private browsing modes often block
-            storage — use an export below to keep a copy.
+            IndexedDB isn't available, so this session runs in memory. Data is lost when the tab closes. Private browsing often blocks
+            storage, so export below if you want to keep a copy.
           </p>
         ) : null}
 
@@ -143,7 +143,7 @@ export default function SettingsPage() {
         <CardHeader
           title="Demonstration data"
           icon={<Sparkles aria-hidden className="h-4 w-4" />}
-          description="Loading the sample workspace replaces what is in this browser with the fictional candidate “Ayesha Rahman”, clearly labelled throughout the interface."
+          description="Loading the sample workspace replaces what is in this browser with a fictional candidate, “Ayesha Rahman”. It stays labelled as demo data across the app."
         />
         <div className="mt-4 flex flex-wrap gap-2">
           <Button variant="secondary" onClick={() => (hasData ? setConfirmSample(true) : loadSample())}>
@@ -172,7 +172,7 @@ export default function SettingsPage() {
         <CardHeader
           title="AI provider"
           icon={<Cpu aria-hidden className="h-4 w-4" />}
-          description="The provider is configured entirely on the API server through environment variables. No key is ever present in this browser, and no key is stored with your workspace."
+          description="The provider is configured on the API server through environment variables. No key ever reaches this browser or your workspace."
           action={
             <>
               <Badge tone={status === 'online' ? (aiAvailable ? 'brand' : 'neutral') : 'caution'}>
@@ -210,7 +210,7 @@ export default function SettingsPage() {
 
         {error ? (
           <p className="mt-3 rounded-xl border border-caution/40 bg-caution-soft p-3 text-[11px] leading-relaxed text-caution">
-            {error} Every analysis feature still works in the browser using deterministic rules, so nothing is blocked — only server-side file parsing
+            {error} Every analysis feature still works in the browser using local rules, so nothing is blocked. Only server-side file parsing
             and optional AI features need the API. Start it with <span className="font-mono">npm run dev:api</span>.
           </p>
         ) : null}
@@ -222,8 +222,8 @@ AI_BASE_URL=https://api.openai.com/v1
 AI_MODEL=gpt-4o-mini
 AI_TIMEOUT_MS=30000`}</pre>
           <p className="mt-2 text-[11px] leading-relaxed text-brand/60">
-            Leave AI_API_KEY empty and every screen falls back to deterministic local logic, which is the default for this project. When AI is used, the
-            interface labels the result as AI-assisted and validates the model's structured output against a schema before using it.
+            Leave AI_API_KEY empty and every screen falls back to local rules, which is the default here. When AI is used, the result is
+            labelled AI-assisted and the model's output is validated against a schema before use.
           </p>
         </div>
       </Card>

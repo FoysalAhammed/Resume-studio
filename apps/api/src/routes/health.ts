@@ -4,12 +4,10 @@ import { MATCH_CONFIG } from '@careerlens/core';
 
 export const healthRouter = Router();
 
-/** GET /api/health - service status, mode (local/AI) and active limits. */
 healthRouter.get('/health', (_req, res) => {
   res.json(healthPayload());
 });
 
-/** GET /api/meta/match-config - the live weights of the matching model. */
 healthRouter.get('/meta/match-config', (_req, res) => {
   res.json({
     engineVersion: MATCH_CONFIG.version,

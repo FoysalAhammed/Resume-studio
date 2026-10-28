@@ -82,10 +82,8 @@ function upsert<T extends { id: string }>(items: T[], item: T): T[] {
   return next;
 }
 
-/**
- * The single reducer for the whole workspace. Every branch keeps `updatedAt` and
- * the activity log consistent, so the dashboard never shows stale provenance.
- */
+// One reducer for the whole workspace. Every branch keeps updatedAt and the
+// activity log in sync, so the dashboard never shows stale provenance.
 function reducer(state: Workspace, action: Action): Workspace {
   const now = new Date().toISOString();
   const withMeta = (next: Partial<Workspace>): Workspace => ({ ...state, ...next, updatedAt: now });
@@ -221,7 +219,7 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
       const stored = await loadWorkspace();
       if (cancelled) return;
       if (stored) {
-        // A stored workspace written by a newer schema is ignored rather than guessed at.
+        // A stored workspace from a newer schema is ignored, not guessed at.
         const parsed = workspaceSchema.safeParse(stored);
         if (parsed.success) dispatch({ type: 'hydrate', workspace: parsed.data as Workspace });
       }

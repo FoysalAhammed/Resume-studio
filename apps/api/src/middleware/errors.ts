@@ -18,10 +18,7 @@ export const notFoundHandler: RequestHandler = (req, res) => {
   res.status(404).json({ error: { code: 'not_found', message: `No route matches ${req.method} ${req.path}` } });
 };
 
-/**
- * Central error handler. Clients never receive stack traces, file paths or
- * internal provider details - only a short code and a safe message.
- */
+// Clients never receive stack traces, file paths or provider details: just a code and a safe message.
 export const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
   if (err instanceof AppError) {
     res.status(err.status).json({ error: { code: err.code, message: err.message } });

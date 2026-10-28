@@ -53,7 +53,7 @@ export default function JobDetailPage() {
         <EmptyState
           icon={<Briefcase aria-hidden className="h-8 w-8" />}
           title="Nothing to show"
-          description="It may have been deleted. Choose another advert from the Job Explorer."
+          description="It looks like it was deleted. Choose another advert from the Job Explorer."
           action={
             <Link to="/jobs" className="rounded-xl bg-brand px-4 py-2.5 text-xs font-bold text-ink transition-colors hover:bg-brand-hover">
               Back to Job Explorer
@@ -81,7 +81,7 @@ export default function JobDetailPage() {
       job.requirements.map((item) => (item.id === requirement.id ? { ...item, status: next, editedByUser: true } : item)),
       `Marked ${requirement.label} as ${next} in ${job.title}.`,
     );
-    toast.info(`${requirement.label} is now ${next}`, 'The compatibility score was recalculated with the new weighting.');
+    toast.info(`${requirement.label} is now ${next}`, 'The score was recalculated.');
   };
 
   const removeRequirement = (requirement: JobRequirement) => {
@@ -235,7 +235,7 @@ export default function JobDetailPage() {
             </Card>
 
             <Card>
-              <CardHeader title="How this was extracted" description="Provenance for everything shown on this page." action={<SourceBadge source={job.extraction.method === 'ai' ? 'ai' : 'local'} />} />
+              <CardHeader title="How this was extracted" description="Where everything on this page came from." action={<SourceBadge source={job.extraction.method === 'ai' ? 'ai' : 'local'} />} />
               <ul className="mt-4 space-y-2">
                 {job.extraction.notes.map((note, index) => (
                   <li key={index} className="flex items-start gap-2 text-[11px] leading-relaxed text-brand/70">
@@ -245,8 +245,8 @@ export default function JobDetailPage() {
                 ))}
               </ul>
               <p className="mt-4 text-[11px] leading-relaxed text-brand/55">
-                Requirement extraction is keyword and pattern based. Always check the list — a tool mentioned in an unusual way can be missed, and you
-                can correct it in the “Edit requirements” tab.
+                Requirement extraction uses keywords and patterns, so always check the list. A tool mentioned in an unusual way can be missed, and you
+                can fix it in the “Edit requirements” tab.
               </p>
             </Card>
           </div>
@@ -256,7 +256,7 @@ export default function JobDetailPage() {
       {tab === 'match' && report ? (
         <div className="space-y-6">
           <Card>
-            <CardHeader title="Requirement outcomes" description="Confirmed means strong evidence was found; partial means related or indirect evidence." />
+            <CardHeader title="Requirement outcomes" description="Confirmed means there is strong evidence. Partial means the evidence is related or indirect." />
             <div className="mt-4">
               <MatchBreakdownChart report={report} />
             </div>
@@ -308,7 +308,7 @@ export default function JobDetailPage() {
             <CardHeader
               title="Prioritised gaps"
               icon={<ListChecks aria-hidden className="h-4 w-4" />}
-              description="Ordered by internal priority: advert importance multiplied by the evidence you are missing. Expand a gap to see the suggested practical task."
+              description="Sorted by the advert's emphasis and the evidence you're missing. Expand a gap for a suggested task."
               action={
                 <Button size="sm" onClick={buildRoadmap} icon={<RouteIcon aria-hidden className="h-3.5 w-3.5" />}>
                   Turn into a roadmap
@@ -327,7 +327,7 @@ export default function JobDetailPage() {
           <CardHeader
             title={`Review and correct the requirements (${job.requirements.length})`}
             icon={<Pencil aria-hidden className="h-4 w-4" />}
-            description="Automatic extraction is not perfect. Correcting it here changes the report immediately, because the score is recomputed from this list."
+            description="Automatic extraction isn't perfect. Corrections here update the report straight away, because the score comes from this list."
             action={
               <Button size="sm" variant="secondary" onClick={() => navigate(`/jobs/${job.id}`)} icon={<Save aria-hidden className="h-3.5 w-3.5" />}>
                 Done
@@ -373,7 +373,7 @@ export default function JobDetailPage() {
           </ul>
 
           <div className="mt-4 grid gap-3 sm:grid-cols-[1fr_auto]">
-            <Field label="Add a requirement that was missed" hint="Known technologies are recognised automatically; anything else is treated as a custom criterion.">
+            <Field label="Add a requirement that was missed" hint="Known technologies are recognised automatically. Anything else is added as a custom criterion.">
               <Input
                 value={newRequirement}
                 onChange={(event) => setNewRequirement(event.target.value)}
@@ -396,7 +396,7 @@ export default function JobDetailPage() {
         <Card>
           <CardHeader
             title="Advert text as you provided it"
-            description="This is the source of truth for the analysis. It is stored in this browser only and is never sent anywhere unless you explicitly enable AI assistance."
+            description="The analysis is built from this text. It stays in this browser and is only sent anywhere if you enable AI assistance."
           />
           <pre className="mt-4 max-h-[32rem] overflow-auto whitespace-pre-wrap rounded-xl border border-ink-600 bg-ink-900 p-4 font-mono text-[11px] leading-relaxed text-brand/75 scrollbar-thin">
             {job.rawText}

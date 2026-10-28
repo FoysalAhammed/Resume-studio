@@ -5,11 +5,8 @@ interface Bucket {
   hits: number[];
 }
 
-/**
- * Small dependency-free sliding-window rate limiter.
- * Adequate for a single-instance demonstration deployment; a production
- * deployment behind multiple instances would move this to shared storage.
- */
+// Sliding-window rate limiter. Fine for a single instance; running several would
+// need shared storage instead of an in-memory map.
 export function rateLimit(options: { windowMs: number; max: number; name: string }): RequestHandler {
   const buckets = new Map<string, Bucket>();
 

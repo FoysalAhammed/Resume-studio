@@ -8,14 +8,14 @@ interface ApiStatusValue {
   status: ApiStatus;
   health: ApiHealth | null;
   error: string | null;
-  /** True when the API is reachable AND an AI provider is configured. */
+  // API reachable and an AI provider configured.
   aiAvailable: boolean;
   refresh: () => Promise<void>;
 }
 
 const ApiStatusContext = createContext<ApiStatusValue | null>(null);
 
-/** Polls the API health endpoint so the UI can label what is running where. */
+// Polls /api/health so the UI can show what's running where.
 export function ApiStatusProvider({ children }: { children: ReactNode }) {
   const [status, setStatus] = useState<ApiStatus>('checking');
   const [health, setHealth] = useState<ApiHealth | null>(null);

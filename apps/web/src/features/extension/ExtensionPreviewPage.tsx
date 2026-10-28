@@ -42,7 +42,7 @@ export default function ExtensionPreviewPage() {
   const advertTitle = selectedJob?.title ?? 'Junior Frontend Engineer';
   const advertCompany = selectedJob?.company ?? 'Northwind Labs (fictional sample)';
 
-  /** Only the skill name, proficiency and lexicon id ever leave the page. */
+  // Only the skill name, proficiency and lexicon id leave the page.
   const skillPayload = useMemo(
     () =>
       workspace.profile.skills.map((skill) => ({
@@ -113,7 +113,7 @@ export default function ExtensionPreviewPage() {
     <div className="space-y-6">
       <PageHeader
         title="Browser Extension Preview"
-        description="This page shows how the CareerLens assistant would behave on a job board. It is a realistic preview running inside the website — not an installed browser extension."
+        description="This page shows how the CareerLens assistant would work on a job board. It's a preview running inside the website, not an installed browser extension."
         action={
           <>
             <Badge tone="caution">Preview only</Badge>
@@ -123,15 +123,15 @@ export default function ExtensionPreviewPage() {
       />
 
       <div className="rounded-xl border border-caution/40 bg-caution-soft p-3.5 text-[11px] leading-relaxed text-caution">
-        Honest labelling: no Chrome extension has been built or installed. What is real here is the analysis engine and the API contract it would use —
-        the popup, the content script and the packaging are not implemented. The build steps are listed at the bottom of this page.
+        No Chrome extension has actually been built or installed. The analysis engine and the API contract it would use are real, but the popup, the
+        content script and the packaging are not. Build steps are listed at the bottom of this page.
       </div>
 
       <Card>
         <CardHeader
           title="Pick the page content to analyse"
           icon={<Puzzle aria-hidden className="h-4 w-4" />}
-          description="A real extension would read the job advert from the current tab after an explicit action by the user, and never from unrelated pages."
+          description="A real extension would read the advert from the current tab only after you click it, never from other pages."
           action={
             <Button size="sm" onClick={() => void analyse()} loading={busy} icon={<Sparkles aria-hidden className="h-3.5 w-3.5" />}>
               Analyse this page
@@ -154,7 +154,7 @@ export default function ExtensionPreviewPage() {
           </div>
           <div className="flex items-end">
             <p className="text-[11px] leading-relaxed text-brand/60">
-              {skillPayload.length} skills would be sent. The payload contains a name and proficiency for each skill — never your full profile.
+              {skillPayload.length} skills would be sent, each as a name and proficiency only. Never your full profile.
             </p>
           </div>
         </div>
@@ -252,7 +252,7 @@ export default function ExtensionPreviewPage() {
               ))}
             </div>
             <p className="mt-2 text-[10px] leading-relaxed text-brand/40">
-              Those actions are shown for layout only and are disabled here; the real versions live in Resume Studio, the cover letter page and Skill Gaps.
+              Those actions are disabled here and only shown for layout. The real versions live in Resume Studio, the cover letter page and Skill Gaps.
             </p>
           </aside>
         </div>
@@ -263,7 +263,7 @@ export default function ExtensionPreviewPage() {
           <CardHeader
             title="The API contract it would use"
             icon={<Terminal aria-hidden className="h-4 w-4" />}
-            description="A real extension calls this endpoint with a deliberately small payload."
+            description="A real extension would call this endpoint with a small payload."
           />
           <pre className="mt-4 overflow-auto rounded-xl border border-ink-600 bg-ink-900 p-3 font-mono text-[10px] leading-relaxed text-brand/75 scrollbar-thin">
 {`POST /api/extension/analyze
@@ -292,8 +292,8 @@ Content-Type: application/json
 }`}
           </pre>
           <p className="mt-3 text-[11px] leading-relaxed text-brand/60">
-            The endpoint accepts only a skill subset, so it cannot be used to read or exfiltrate a complete workspace. Rate limiting applies per client
-            address, and all errors are returned as short, safe messages.
+            The endpoint takes a skill subset only, so it can't be used to pull a whole workspace. Rate limits apply per client
+            address and errors come back as short, safe messages.
           </p>
         </Card>
 
@@ -301,7 +301,7 @@ Content-Type: application/json
           <CardHeader
             title="What a real extension would need"
             icon={<ShieldCheck aria-hidden className="h-4 w-4" />}
-            description="Listed honestly as separate, unfinished work."
+            description="Separate work that still needs doing."
           />
           <ol className="mt-4 space-y-2 text-[11px] leading-relaxed text-brand/75">
             <li>1. A Manifest V3 package with a popup page and a content script that only reads the page after the user clicks the extension.</li>
@@ -309,13 +309,13 @@ Content-Type: application/json
             <li>3. User-triggered extraction of the selected advert text, then a POST to the same <span className="font-mono">/api/extension/analyze</span> endpoint.</li>
             <li>4. Rendering of matched, partial and missing requirements with the same explanations shown above.</li>
             <li>5. Graceful failure: a clear message and a retry when the API is unreachable, never a blank popup.</li>
-            <li>6. No API key in extension code — the backend holds credentials, and the popup only talks to the configured API origin.</li>
+            <li>6. No API key in extension code. The backend holds credentials, and the popup only talks to the configured API origin.</li>
           </ol>
           {selectedJob ? (
             <p className="mt-3 text-[11px] text-brand/55">
               Currently previewing with your analysed advert “{selectedJob.title}”. Match statuses are{' '}
               {matchStatusLabel('confirmed').toLowerCase()}, {matchStatusLabel('partial').toLowerCase()} and{' '}
-              {matchStatusLabel('missing').toLowerCase()} — tone key: {matchStatusTone('confirmed')}.
+              {matchStatusLabel('missing').toLowerCase()}. Tone key: {matchStatusTone('confirmed')}.
             </p>
           ) : null}
         </Card>
